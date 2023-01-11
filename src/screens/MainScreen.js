@@ -12,86 +12,103 @@ const reducer = (state, action) => {
 };
 
 export default function MainScreen() {
-  const [offTimer, setOffTimer] = useState(168);
+  const [offTime, setOffTime] = useState(168);
 
-  const [offTillegg, setOffTillegg] = useState(84.7);
-  const [timeSats, setTimesats] = useState(220);
-  const [skattProsent, setSkattProsent] = useState(30);
+  const [offshorePremium, setOffshorePremium] = useState(84.7);
+  const [hourlyRate, setHourlyRate] = useState(220);
+  const [taxPercentage, setTaxPercentage] = useState(30);
 
-  const [manedsLonn, setManedsLonn] = useState(0);
-  const [nettoLonn, setNettoLonn] = useState(0);
-  const [redusertArsverk, setRedusertArsverk] = useState(0);
-  const [redusertArsverkBelop, setRedusertArsverkBelop] = useState(0);
-  const [skatteTrekk, setSkatteTrekk] = useState(0);
-  const [overtidTimerOff, setOvertidTimerOff] = useState(0);
-  const [sumTimerOff, setSumTimerOff] = useState(0);
-  const [overtidGrunnlonn, setOvertidGrunnlonn] = useState(0);
-  const [sumOffshoreTillegg, setSumOffshoreTillegg] = useState(0);
-  const [overtidProsentEkstra, setOvertidProsentEkstra] = useState(0);
-  const [bruttoTotal, setBruttoTotal] = useState(0);
-  const [verneOmbudTimer, setVerneombudTimer] = useState(0);
-  const [voBelop, setVoBelop] = useState(0);
-  const [fagforeningFelles, setFagforeningFelles] = useState(0);
-  const [fagforening, setFagForening] = useState('FF');
+  const [monthlySalary, setMonthlySalary] = useState(0);
+  const [netSalary, setNetSalary] = useState(0);
+  const [reducedAnnualWork, setReducedAnnualWork] = useState(0);
+  const [reducedAnnualWorkAmount, setReducedAnnualWorkAmount] = useState(0);
+  const [taxWithholding, setTaxWithholding] = useState(0);
+  const [overtimeOffshoreHours, setOvertimeOffshoreHours] = useState(0);
+  const [totalOffshoreHours, setTotalOffshoreHours] = useState(0);
+  const [overtimeBaseSalary, setOvertimeBaseSalary] = useState(0);
+  const [totalOffshorePremium, setTotalOffshorePremium] = useState(0);
+  const [overtimeExtraPercentage, setOvertimeExtraPercentage] = useState(0);
+  const [grossTotal, setGrossTotal] = useState(0);
+  const [safetyRepresentativeHours, setSafetyRepresentativeHours] = useState(0);
+  const [srAmount, setSrAmount] = useState(0);
+  const [unionFees, setUnionFees] = useState(0);
+  const [unionName, setUnionName] = useState('FF');
+  const [clubDeduction, setClubDeduction] = useState(0);
+  const [travelExpenses, setTravelExpenses] = useState(0);
 
-  const egenAndelForsikring = -39;
-  const klubbTrekk = -40;
+  const employeeInsuranceCost= -39;
 
   useEffect(() => {
     const calculateLonn = () => {
       const brutto = (
-        manedsLonn +
-        redusertArsverkBelop +
-        overtidGrunnlonn +
-        overtidProsentEkstra +
-        sumOffshoreTillegg +
-        voBelop
+        monthlySalary +
+        reducedAnnualWorkAmount +
+        overtimeBaseSalary +
+        overtimeExtraPercentage +
+        totalOffshorePremium +
+        srAmount +
+        Number(travelExpenses)
       ).toFixed(2);
 
-      setManedsLonn(Number(162.5 * timeSats));
-      setRedusertArsverk(Number((offTimer * 9.332) / 100).toFixed(2));
-      setRedusertArsverkBelop(-Number(redusertArsverk * timeSats).toFixed(2));
-      setVoBelop(verneOmbudTimer * 3);
-      setOvertidGrunnlonn(Number(overtidTimerOff * timeSats));
-      setOvertidProsentEkstra(Number(overtidGrunnlonn));
-      setSumOffshoreTillegg(Number((offTillegg * sumTimerOff).toFixed(2)));
-      setSkatteTrekk(-Number(brutto * skattProsent) / 100);
-      setSumTimerOff(Number(offTimer + overtidTimerOff));
-      setBruttoTotal(Number(brutto));
-      setFagforeningFelles(-Number((brutto * 1.5) / 100).toFixed(2));
-      setNettoLonn(
+      setMonthlySalary(Number(162.5 * hourlyRate));
+      setReducedAnnualWork(Number((offTime * 9.332) / 100).toFixed(2));
+      setReducedAnnualWorkAmount(-Number(reducedAnnualWork * hourlyRate).toFixed(2));
+      setSrAmount(safetyRepresentativeHours * 15);
+      setOvertimeBaseSalary(Number(overtimeOffshoreHours * hourlyRate));
+      setOvertimeExtraPercentage(Number(overtimeBaseSalary));
+      setTotalOffshorePremium(Number((offshorePremium * totalOffshoreHours).toFixed(2)));
+      setTaxWithholding(-Number(brutto * taxPercentage) / 100);
+      setTotalOffshoreHours(Number(offTime + overtimeOffshoreHours));
+      setGrossTotal(Number(brutto));
+
+      //check unionName
+      if(unionName==='FF') {
+        setUnionFees(-Number(((brutto-travelExpenses) * 1.5) / 100).toFixed(2));
+      }  else if (unionName === 'Safe') {
+        setUnionFees(-Number(460))
+        setClubDeduction(-Number(40));
+      } else if (unionName === "Parat") {
+        setUnionFees(-Number(520))
+        setClubDeduction(-Number(40))
+      } else {
+        setUnionFees(Number(0))
+        setClubDeduction(Number(0));
+      }
+      
+      setNetSalary(
         Number(
-          bruttoTotal +
-            skatteTrekk +
-            klubbTrekk +
-            egenAndelForsikring +
-            fagforeningFelles
+          grossTotal +
+          taxWithholding +
+          clubDeduction +
+          employeeInsuranceCost +
+            unionFees
         ).toFixed(2)
       );
     };
-    console.log(fagforening)
+    console.log(unionName)
     calculateLonn();
   }, [
-    bruttoTotal,
-    voBelop,
-    sumOffshoreTillegg,
-    verneOmbudTimer,
-    manedsLonn,
-    timeSats,
-    offTillegg,
-    offTimer,
-    skattProsent,
-    redusertArsverk,
-    redusertArsverkBelop,
-    skatteTrekk,
-    overtidTimerOff,
-    overtidGrunnlonn,
-    overtidProsentEkstra,
-    sumTimerOff,
-    fagforeningFelles,
-    egenAndelForsikring,
-    klubbTrekk,
-    fagforening
+    grossTotal,
+    srAmount,
+    totalOffshorePremium,
+    safetyRepresentativeHours,
+    monthlySalary,
+    hourlyRate,
+    offshorePremium,
+    offTime,
+    taxPercentage,
+    reducedAnnualWork,
+    reducedAnnualWorkAmount,
+    taxWithholding,
+    overtimeOffshoreHours,
+    overtimeBaseSalary,
+    overtimeExtraPercentage,
+    totalOffshoreHours,
+    unionFees,
+    employeeInsuranceCost,
+    clubDeduction,
+    unionName,
+    travelExpenses
   ]);
 
   return (
@@ -105,32 +122,44 @@ export default function MainScreen() {
                 <Form.Control
                   className="bg-light"
                   type="number"
-                  value={offTimer}
-                  onChange={(e) => setOffTimer(Number(e.target.value))}
+                  value={offTime}
+                  onChange={(e) => setOffTime(Number(e.target.value))}
                   required
                 ></Form.Control>
               </Col>
             </Form.Group>
-            <Form.Group as={Row} className="mb-3" controlId="overtidTimerOff">
+            <Form.Group as={Row} className="mb-3" controlId="overtimeOffshoreHours">
               <Form.Label column>Overtid Off</Form.Label>
               <Col>
                 <Form.Control
                   className="bg-light"
                   type="number"
-                  value={overtidTimerOff}
-                  onChange={(e) => setOvertidTimerOff(Number(e.target.value))}
+                  value={overtimeOffshoreHours}
+                  onChange={(e) => setOvertimeOffshoreHours(Number(e.target.value))}
                   required
                 ></Form.Control>
               </Col>
             </Form.Group>
-            <Form.Group as={Row} className="mb-3" controlId="offTillegg">
+            <Form.Group as={Row} className="mb-3" controlId="offshorePremium">
               <Form.Label column>Off/tillegg</Form.Label>
               <Col>
                 <Form.Control
                   className="bg-light"
                   type="number"
-                  value={offTillegg}
-                  onChange={(e) => setOffTillegg(e.target.value)}
+                  value={offshorePremium}
+                  onChange={(e) => setOffshorePremium(e.target.value)}
+                  required
+                ></Form.Control>
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row} className="mb-3" controlId="offshorePremium">
+              <Form.Label column>Reise</Form.Label>
+              <Col>
+                <Form.Control
+                  className="bg-light"
+                  type="number"
+                  value={travelExpenses}
+                  onChange={(e) => setTravelExpenses(e.target.value)}
                   required
                 ></Form.Control>
               </Col>
@@ -141,8 +170,8 @@ export default function MainScreen() {
                 <Form.Control
                   className="bg-light "
                   type="number"
-                  value={timeSats}
-                  onChange={(e) => setTimesats(e.target.value)}
+                  value={hourlyRate}
+                  onChange={(e) => setHourlyRate(e.target.value)}
                   required
                 ></Form.Control>
               </Col>
@@ -153,8 +182,8 @@ export default function MainScreen() {
                 <Form.Control
                   className="bg-light "
                   type="number"
-                  value={verneOmbudTimer}
-                  onChange={(e) => setVerneombudTimer(e.target.value)}
+                  value={safetyRepresentativeHours}
+                  onChange={(e) => setSafetyRepresentativeHours(e.target.value)}
                   required
                 ></Form.Control>
               </Col>
@@ -166,8 +195,8 @@ export default function MainScreen() {
                 <Form.Control
                   className="bg-light"
                   type="number"
-                  value={skattProsent}
-                  onChange={(e) => setSkattProsent(e.target.value)}
+                  value={taxPercentage}
+                  onChange={(e) => setTaxPercentage(e.target.value)}
                   required
                 ></Form.Control>
               </Col>
@@ -177,7 +206,7 @@ export default function MainScreen() {
             <Form.Check
               inline
               defaultChecked
-              onChange={(e)=>setFagForening("FF")}
+              onChange={(e)=>setUnionName("FF")}
               label="FF"
               name="group1"
               type={"radio"}
@@ -185,7 +214,7 @@ export default function MainScreen() {
             />
             <Form.Check
               inline
-              onChange={(e)=>setFagForening("Safe")}
+              onChange={(e)=>setUnionName("Safe")}
               label="Safe"
               name="group1"
               type={"radio"}
@@ -193,7 +222,7 @@ export default function MainScreen() {
             />
             <Form.Check
               inline
-              onChange={(e)=>setFagForening("Parat")}
+              onChange={(e)=>setUnionName("Parat")}
               label="Parat"
               name="group1"
               type={"radio"}
@@ -201,7 +230,7 @@ export default function MainScreen() {
             />
             <Form.Check
               inline
-              onChange={(e)=>setFagForening("UO")}
+              onChange={(e)=>setUnionName("UO")}
               label="UO"
               name="group1"
               type={"radio"}
@@ -212,7 +241,7 @@ export default function MainScreen() {
         </Col>
         <Col md={3}>
           {/* <h4>Netto Utbetalt</h4>
-          <div>{nettoLonn}</div> */}
+          <div>{netSalary}</div> */}
           <Form>
             <Form.Group as={Row} className="mb-3" controlId="skatt">
               <Form.Label column>Redusert Årsverk</Form.Label>
@@ -220,7 +249,7 @@ export default function MainScreen() {
                 <Form.Control
                   className="bg-light"
                   type="number"
-                  value={redusertArsverk}
+                  value={reducedAnnualWork}
                   disabled
                 ></Form.Control>
               </Col>
@@ -231,7 +260,7 @@ export default function MainScreen() {
                 <Form.Control
                   className="bg-light"
                   type="number"
-                  value={sumTimerOff}
+                  value={totalOffshoreHours}
                   disabled
                 ></Form.Control>
               </Col>
@@ -243,54 +272,63 @@ export default function MainScreen() {
             <FormInput
               type={""}
               label={"Månedslønn"}
-              number={`${manedsLonn} Kr`}
-              id={"manedsLonn"}
+              number={`${monthlySalary} Kr`}
+              id={"monthlySalary"}
             ></FormInput>
-            {offTimer > 0 ? (
+            {travelExpenses > 0 ? (
+              <FormInput
+              type={""}
+              label={"ReiseOpp"}
+              number={`${travelExpenses} Kr`}
+              id={"ReiseOpp"}
+            ></FormInput>
+            ) : ('')}
+            
+            {offTime > 0 ? (
               <FormInput
                 type={""}
                 label={"Beløp Red/Verk"}
-                number={`${redusertArsverkBelop} Kr`}
-                id={"redusertArsverkBelop"}
+                number={`${reducedAnnualWorkAmount} Kr`}
+                id={"reducedAnnualWorkAmount"}
               ></FormInput>
             ) : (
               ""
             )}
 
-            {overtidTimerOff > 0 ? (
+            {overtimeOffshoreHours > 0 ? (
               <>
                 <FormInput
                   type={""}
                   label={"Overtid Grunnlonn"}
-                  number={`${overtidGrunnlonn} Kr`}
-                  id={"overtidGrunnlonn"}
+                  number={`${overtimeBaseSalary} Kr`}
+                  id={"overtimeBaseSalary"}
                 ></FormInput>
                 <FormInput
                   type={""}
                   label={"Overtid 100%"}
-                  number={`${overtidProsentEkstra} Kr`}
+                  number={`${overtimeExtraPercentage} Kr`}
                   id={"overtidEkstra100"}
                 ></FormInput>
               </>
             ) : (
               ""
             )}
-            {offTimer > 0 ? (
+            {offTime > 0 ? (
               <FormInput
                 type={""}
                 label={"Off/Tillegg"}
-                number={`${sumOffshoreTillegg} Kr`}
+                number={`${totalOffshorePremium} Kr`}
                 id={"offshoretillegg"}
               ></FormInput>
             ) : (
               ""
             )}
-            {voBelop > 0 ? (
+            {srAmount > 0 ? (
               <FormInput
                 type={""}
                 label={"VerneOmbud"}
-                number={`${voBelop} Kr`}
-                id={"voBelop"}
+                number={`${srAmount} Kr`}
+                id={"srAmount"}
               ></FormInput>
             ) : (
               ""
@@ -299,40 +337,47 @@ export default function MainScreen() {
             <FormInput
               type={""}
               label={"Brutto Lønn"}
-              number={`${bruttoTotal} Kr`}
-              id={"bruttoTotal"}
+              number={`${grossTotal} Kr`}
+              id={"grossTotal"}
             ></FormInput>
-            <FormInput
+            {unionFees !==0 ? (
+              <FormInput
               type={""}
               label={"Fagforening"}
-              number={`${fagforeningFelles} Kr`}
-              id={"fagforening"}
+              number={`${unionFees} Kr`}
+              id={"unionName"}
             ></FormInput>
+            ) : ('')}
+            
             <FormInput
               type={""}
               label={"EgenAndel Fors"}
-              number={`${egenAndelForsikring} Kr`}
-              id={"egenandelforsikring"}
+              number={`${employeeInsuranceCost} Kr`}
+              id={"employeeInsuranceCost"}
             ></FormInput>
-            <FormInput
+            {clubDeduction !== 0 ? (
+              <FormInput
               type={""}
               label={"Klubbtrekk"}
-              number={`${klubbTrekk} Kr`}
-              id={"klubbtrekk"}
+              number={`${clubDeduction} Kr`}
+              id={"clubDeduction"}
             ></FormInput>
+            ) : ("")
+          }
+            
             <hr />
             <FormInput
               type={""}
               label={"Skattetrekk"}
-              number={`${skatteTrekk.toFixed(2)} Kr`}
-              id={"skatteTrekk"}
+              number={`${taxWithholding.toFixed(2)} Kr`}
+              id={"taxWithholding"}
             ></FormInput>
             <hr />
             <FormInput
               type={""}
               label={"Netto Utbetalt"}
-              number={`${nettoLonn} Kr`}
-              id={"nettoLonn"}
+              number={`${netSalary} Kr`}
+              id={"netSalary"}
             ></FormInput>
           </Form>
         </Col>
