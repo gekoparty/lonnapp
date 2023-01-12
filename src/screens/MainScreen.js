@@ -3,6 +3,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import FormInput from "../components/FormInput";
+import schema from "../validations/schema";
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -32,11 +33,12 @@ export default function MainScreen() {
   const [safetyRepresentativeHours, setSafetyRepresentativeHours] = useState(0);
   const [srAmount, setSrAmount] = useState(0);
   const [unionFees, setUnionFees] = useState(0);
-  const [unionName, setUnionName] = useState('FF');
+  const [unionName, setUnionName] = useState("FF");
   const [clubDeduction, setClubDeduction] = useState(0);
   const [travelExpenses, setTravelExpenses] = useState(0);
+  const [errorMessage, setErrorMessage] = useState(null);
 
-  const employeeInsuranceCost= -39;
+  const employeeInsuranceCost = -39;
 
   useEffect(() => {
     const calculateLonn = () => {
@@ -52,40 +54,46 @@ export default function MainScreen() {
 
       setMonthlySalary(Number(162.5 * hourlyRate));
       setReducedAnnualWork(Number((offTime * 9.332) / 100).toFixed(2));
-      setReducedAnnualWorkAmount(-Number(reducedAnnualWork * hourlyRate).toFixed(2));
+      setReducedAnnualWorkAmount(
+        -Number(reducedAnnualWork * hourlyRate).toFixed(2)
+      );
       setSrAmount(safetyRepresentativeHours * 15);
       setOvertimeBaseSalary(Number(overtimeOffshoreHours * hourlyRate));
       setOvertimeExtraPercentage(Number(overtimeBaseSalary));
-      setTotalOffshorePremium(Number((offshorePremium * totalOffshoreHours).toFixed(2)));
+      setTotalOffshorePremium(
+        Number((offshorePremium * totalOffshoreHours).toFixed(2))
+      );
       setTaxWithholding(-Number(brutto * taxPercentage) / 100);
       setTotalOffshoreHours(Number(offTime + overtimeOffshoreHours));
       setGrossTotal(Number(brutto));
 
       //check unionName
-      if(unionName==='FF') {
-        setUnionFees(-Number(((brutto-travelExpenses) * 1.5) / 100).toFixed(2));
-      }  else if (unionName === 'Safe') {
-        setUnionFees(-Number(460))
+      if (unionName === "FF") {
+        setUnionFees(
+          -Number(((brutto - travelExpenses) * 1.5) / 100).toFixed(2)
+        );
+      } else if (unionName === "Safe") {
+        setUnionFees(-Number(460));
         setClubDeduction(-Number(40));
       } else if (unionName === "Parat") {
-        setUnionFees(-Number(520))
-        setClubDeduction(-Number(40))
+        setUnionFees(-Number(520));
+        setClubDeduction(-Number(40));
       } else {
-        setUnionFees(Number(0))
+        setUnionFees(Number(0));
         setClubDeduction(Number(0));
       }
-      
+
       setNetSalary(
         Number(
           grossTotal +
-          taxWithholding +
-          clubDeduction +
-          employeeInsuranceCost +
+            taxWithholding +
+            clubDeduction +
+            employeeInsuranceCost +
             unionFees
         ).toFixed(2)
       );
     };
-    console.log(unionName)
+    console.log(unionName);
     calculateLonn();
   }, [
     grossTotal,
@@ -108,8 +116,47 @@ export default function MainScreen() {
     employeeInsuranceCost,
     clubDeduction,
     unionName,
-    travelExpenses
+    travelExpenses,
   ]);
+
+  /* Validations */
+
+  const handleTaxChange = (event) => {
+    const value = event.target.value;
+    setTaxPercentage(value);
+
+    schema
+      .validateAt(
+        "taxPercentage",
+        { taxPercentage: value },
+        { abortEarly: false }
+      )
+      .then(() => {
+        setErrorMessage(null); //clear error
+      })
+      .catch((err) => {
+        let message;
+        if (
+          err.inner.find(
+            (er) =>
+              er.path === "taxPercentage" &&
+              er.message === "Kan ikke være negativt tall"
+          )
+        ) {
+          message = "Kan ikke være negativt tall";
+        } else if (
+          err.inner.find(
+            (er) =>
+              er.path === "taxPercentage" && er.message === "Skatt kan ikke over 100%"
+          )
+        ) {
+          message = "Skatt kan ikke over 100%";
+        } else {
+          message = err.errors;
+        }
+        setErrorMessage(message);
+      });
+  };
 
   return (
     <div className="small-container">
@@ -128,14 +175,20 @@ export default function MainScreen() {
                 ></Form.Control>
               </Col>
             </Form.Group>
-            <Form.Group as={Row} className="mb-3" controlId="overtimeOffshoreHours">
+            <Form.Group
+              as={Row}
+              className="mb-3"
+              controlId="overtimeOffshoreHours"
+            >
               <Form.Label column>Overtid Off</Form.Label>
               <Col>
                 <Form.Control
                   className="bg-light"
                   type="number"
                   value={overtimeOffshoreHours}
-                  onChange={(e) => setOvertimeOffshoreHours(Number(e.target.value))}
+                  onChange={(e) =>
+                    setOvertimeOffshoreHours(Number(e.target.value))
+                  }
                   required
                 ></Form.Control>
               </Col>
@@ -193,49 +246,56 @@ export default function MainScreen() {
               <Form.Label column>Skatt</Form.Label>
               <Col>
                 <Form.Control
+                  min={0}
+                  max={100}
+                  onKeyDown={(e) => e.key === "-" && e.preventDefault()}
                   className="bg-light"
                   type="number"
                   value={taxPercentage}
-                  onChange={(e) => setTaxPercentage(e.target.value)}
+                  onChange={handleTaxChange}
                   required
                 ></Form.Control>
               </Col>
+              {errorMessage && (
+                <div className="alert alert-danger">{errorMessage}</div>
+              )}
             </Form.Group>
+
             <h4>Fagforening</h4>
             <div>
-            <Form.Check
-              inline
-              defaultChecked
-              onChange={(e)=>setUnionName("FF")}
-              label="FF"
-              name="group1"
-              type={"radio"}
-              id="group1"
-            />
-            <Form.Check
-              inline
-              onChange={(e)=>setUnionName("Safe")}
-              label="Safe"
-              name="group1"
-              type={"radio"}
-              id="group2"
-            />
-            <Form.Check
-              inline
-              onChange={(e)=>setUnionName("Parat")}
-              label="Parat"
-              name="group1"
-              type={"radio"}
-              id="group3"
-            />
-            <Form.Check
-              inline
-              onChange={(e)=>setUnionName("UO")}
-              label="UO"
-              name="group1"
-              type={"radio"}
-              id="group3"
-            />
+              <Form.Check
+                inline
+                defaultChecked
+                onChange={(e) => setUnionName("FF")}
+                label="FF"
+                name="group1"
+                type={"radio"}
+                id="group1"
+              />
+              <Form.Check
+                inline
+                onChange={(e) => setUnionName("Safe")}
+                label="Safe"
+                name="group1"
+                type={"radio"}
+                id="group2"
+              />
+              <Form.Check
+                inline
+                onChange={(e) => setUnionName("Parat")}
+                label="Parat"
+                name="group1"
+                type={"radio"}
+                id="group3"
+              />
+              <Form.Check
+                inline
+                onChange={(e) => setUnionName("UO")}
+                label="UO"
+                name="group1"
+                type={"radio"}
+                id="group3"
+              />
             </div>
           </Form>
         </Col>
@@ -277,13 +337,15 @@ export default function MainScreen() {
             ></FormInput>
             {travelExpenses > 0 ? (
               <FormInput
-              type={""}
-              label={"ReiseOpp"}
-              number={`${travelExpenses} Kr`}
-              id={"ReiseOpp"}
-            ></FormInput>
-            ) : ('')}
-            
+                type={""}
+                label={"ReiseOpp"}
+                number={`${travelExpenses} Kr`}
+                id={"ReiseOpp"}
+              ></FormInput>
+            ) : (
+              ""
+            )}
+
             {offTime > 0 ? (
               <FormInput
                 type={""}
@@ -340,15 +402,17 @@ export default function MainScreen() {
               number={`${grossTotal} Kr`}
               id={"grossTotal"}
             ></FormInput>
-            {unionFees !==0 ? (
+            {unionFees !== 0 ? (
               <FormInput
-              type={""}
-              label={"Fagforening"}
-              number={`${unionFees} Kr`}
-              id={"unionName"}
-            ></FormInput>
-            ) : ('')}
-            
+                type={""}
+                label={"Fagforening"}
+                number={`${unionFees} Kr`}
+                id={"unionName"}
+              ></FormInput>
+            ) : (
+              ""
+            )}
+
             <FormInput
               type={""}
               label={"EgenAndel Fors"}
@@ -357,14 +421,15 @@ export default function MainScreen() {
             ></FormInput>
             {clubDeduction !== 0 ? (
               <FormInput
-              type={""}
-              label={"Klubbtrekk"}
-              number={`${clubDeduction} Kr`}
-              id={"clubDeduction"}
-            ></FormInput>
-            ) : ("")
-          }
-            
+                type={""}
+                label={"Klubbtrekk"}
+                number={`${clubDeduction} Kr`}
+                id={"clubDeduction"}
+              ></FormInput>
+            ) : (
+              ""
+            )}
+
             <hr />
             <FormInput
               type={""}
