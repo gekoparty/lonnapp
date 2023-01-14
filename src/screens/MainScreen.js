@@ -4,6 +4,7 @@ import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import FormInput from "../components/FormInput";
 import schema from "../validations/schema";
+import useValidate from "../validations/useValidate";
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -36,7 +37,7 @@ export default function MainScreen() {
   const [unionName, setUnionName] = useState("FF");
   const [clubDeduction, setClubDeduction] = useState(0);
   const [travelExpenses, setTravelExpenses] = useState(0);
-  const [errorMessage, setErrorMessage] = useState(null);
+  const { errors, isValid, validate } = useValidate(schema);
 
   const employeeInsuranceCost = -39;
 
@@ -124,38 +125,7 @@ export default function MainScreen() {
   const handleTaxChange = (event) => {
     const value = event.target.value;
     setTaxPercentage(value);
-
-    schema
-      .validateAt(
-        "taxPercentage",
-        { taxPercentage: value },
-        { abortEarly: false }
-      )
-      .then(() => {
-        setErrorMessage(null); //clear error
-      })
-      .catch((err) => {
-        let message;
-        if (
-          err.inner.find(
-            (er) =>
-              er.path === "taxPercentage" &&
-              er.message === "Kan ikke være negativt tall"
-          )
-        ) {
-          message = "Kan ikke være negativt tall";
-        } else if (
-          err.inner.find(
-            (er) =>
-              er.path === "taxPercentage" && er.message === "Skatt kan ikke over 100%"
-          )
-        ) {
-          message = "Skatt kan ikke over 100%";
-        } else {
-          message = err.errors;
-        }
-        setErrorMessage(message);
-      });
+    validate({ taxPercentage: value });
   };
 
   return (
@@ -256,9 +226,10 @@ export default function MainScreen() {
                   required
                 ></Form.Control>
               </Col>
-              {errorMessage && (
-                <div className="alert alert-danger">{errorMessage}</div>
-              )}
+              {errors && Object.values(errors).map((error, index) => (
+                <div key={index} className="alert alert-danger">{error}</div>
+              ))}
+
             </Form.Group>
 
             <h4>Fagforening</h4>
