@@ -1,10 +1,11 @@
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useEffect, useReducer, useState, setState } from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import FormInput from "../components/FormInput";
 import schema from "../validations/schema";
 import useValidate from "../validations/useValidate";
+
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -95,8 +96,10 @@ export default function MainScreen() {
       );
     };
     console.log(unionName);
+
     calculateLonn();
   }, [
+    isValid,
     grossTotal,
     srAmount,
     totalOffshorePremium,
@@ -122,11 +125,28 @@ export default function MainScreen() {
 
   /* Validations */
 
-  const handleTaxChange = (event) => {
+  const fields = {
+    offTime: { setter: setOffTime, validator: validate },
+    hourlyRate: { setter: setHourlyRate, validator: validate },
+    taxPercentage: { setter: setTaxPercentage, validator: validate },
+    overtimeOffshoreHours: {setter: setOvertimeOffshoreHours, validator: validate},
+    offshorePremium: {setter: setOffshorePremium, validator: validate},
+    travelExpenses: {setter: setTravelExpenses, validator: validate},
+    safetyRepresentativeHours: {setter: setSafetyRepresentativeHours, validator: validate},
+
+  }
+
+
+  const handleValidation = (field, event) => {
     const value = event.target.value;
-    setTaxPercentage(value);
-    validate({ taxPercentage: value });
-  };
+    fields[field].setter(value);
+    fields[field].validator({ [field]: value });
+  }
+
+
+  
+
+  
 
   return (
     <div className="small-container">
@@ -137,12 +157,17 @@ export default function MainScreen() {
               <Form.Label column>Off/Timer</Form.Label>
               <Col>
                 <Form.Control
+                min={0}
                   className="bg-light"
                   type="number"
+                  isInvalid={!!errors.offTime}
                   value={offTime}
-                  onChange={(e) => setOffTime(Number(e.target.value))}
+                  onChange={(event) => handleValidation("offTime", event)}
                   required
                 ></Form.Control>
+                <Form.Control.Feedback type="invalid">
+                  {errors.offTime}
+                </Form.Control.Feedback>
               </Col>
             </Form.Group>
             <Form.Group
@@ -156,59 +181,82 @@ export default function MainScreen() {
                   className="bg-light"
                   type="number"
                   value={overtimeOffshoreHours}
-                  onChange={(e) =>
-                    setOvertimeOffshoreHours(Number(e.target.value))
-                  }
+                  onChange={(event) => handleValidation("overtimeOffshoreHours", event)}
+                  isInvalid={!!errors.overtimeOffshoreHours}
                   required
                 ></Form.Control>
+                <Form.Control.Feedback type="invalid">
+                  {errors.overtimeOffshoreHours}
+                </Form.Control.Feedback>
               </Col>
             </Form.Group>
             <Form.Group as={Row} className="mb-3" controlId="offshorePremium">
               <Form.Label column>Off/tillegg</Form.Label>
               <Col>
                 <Form.Control
+                min={0}
                   className="bg-light"
                   type="number"
                   value={offshorePremium}
-                  onChange={(e) => setOffshorePremium(e.target.value)}
+                  isInvalid={!!errors.offshorePremium}
+                  onChange={(event)=>handleValidation("offshorePremium", event)}
                   required
                 ></Form.Control>
+                <Form.Control.Feedback type="invalid">
+                  {errors.offshorePremium}
+                </Form.Control.Feedback>
               </Col>
             </Form.Group>
-            <Form.Group as={Row} className="mb-3" controlId="offshorePremium">
+            <Form.Group as={Row} className="mb-3" controlId="travelExpenses">
               <Form.Label column>Reise</Form.Label>
               <Col>
                 <Form.Control
+                min={0}
                   className="bg-light"
                   type="number"
                   value={travelExpenses}
-                  onChange={(e) => setTravelExpenses(e.target.value)}
+                  isInvalid={!!errors.travelExpenses}
+                  onChange={(event)=> handleValidation("travelExpenses", event)}
                   required
                 ></Form.Control>
+                <Form.Control.Feedback type="invalid">
+                  {errors.travelExpenses}
+                </Form.Control.Feedback>
               </Col>
             </Form.Group>
             <Form.Group as={Row} className="mb-3" controlId="lonn">
               <Form.Label column>TimeSats</Form.Label>
               <Col>
                 <Form.Control
+                  min={0}
+                  onKeyDown={(e) => e.key === "-" && e.preventDefault()}
                   className="bg-light "
                   type="number"
                   value={hourlyRate}
-                  onChange={(e) => setHourlyRate(e.target.value)}
+                  onChange={(event)=> handleValidation("hourlyRate", event)}
+                  isInvalid={!!errors.hourlyRate}
                   required
                 ></Form.Control>
+                <Form.Control.Feedback type="invalid">
+                  {errors.hourlyRate}
+                </Form.Control.Feedback>
               </Col>
             </Form.Group>
-            <Form.Group as={Row} className="mb-3" controlId="lonn">
+            <Form.Group as={Row} className="mb-3" controlId="safetyHours">
               <Form.Label column>VO Timer</Form.Label>
               <Col>
                 <Form.Control
+                  min={0}
                   className="bg-light "
                   type="number"
                   value={safetyRepresentativeHours}
-                  onChange={(e) => setSafetyRepresentativeHours(e.target.value)}
+                  onChange={(event)=>handleValidation("safetyRepresentativeHours", event)}
+                  isInvalid={!!errors.safetyRepresentativeHours}
                   required
                 ></Form.Control>
+                <Form.Control.Feedback type="invalid">
+                  {errors.safetyRepresentativeHours}
+                </Form.Control.Feedback>
               </Col>
             </Form.Group>
 
@@ -221,15 +269,15 @@ export default function MainScreen() {
                   onKeyDown={(e) => e.key === "-" && e.preventDefault()}
                   className="bg-light"
                   type="number"
+                  isInvalid={!!errors.taxPercentage}
                   value={taxPercentage}
-                  onChange={handleTaxChange}
+                  onChange={(event) => handleValidation("taxPercentage", event)} 
                   required
                 ></Form.Control>
+                <Form.Control.Feedback type="invalid">
+                  {errors.taxPercentage}
+                </Form.Control.Feedback>
               </Col>
-              {errors && Object.values(errors).map((error, index) => (
-                <div key={index} className="alert alert-danger">{error}</div>
-              ))}
-
             </Form.Group>
 
             <h4>Fagforening</h4>
