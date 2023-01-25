@@ -1,7 +1,7 @@
 
 
 import {useState, useEffect} from 'react';
-import * as Yup from "yup";
+
 
 const useValidate = (schema) => {
   const [errors, setErrors] = useState({});

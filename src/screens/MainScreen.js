@@ -1,11 +1,10 @@
-import React, { useEffect, useReducer, useState, setState } from "react";
+import React, { useEffect, useReducer, useState, setState, useCallback } from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import FormInput from "../components/FormInput";
 import schema from "../validations/schema";
 import useValidate from "../validations/useValidate";
-
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -42,62 +41,72 @@ export default function MainScreen() {
 
   const employeeInsuranceCost = -39;
 
+  const calculateSalary= useCallback(()=>  {
+    // Perform calculations here
+    console.log(totalOffshoreHours)
+    const brutto = (
+
+      monthlySalary +
+      reducedAnnualWorkAmount +
+      overtimeBaseSalary +
+      overtimeExtraPercentage +
+      totalOffshorePremium +
+      srAmount +
+      Number(travelExpenses)
+    ).toFixed(2);
+
+    setMonthlySalary(Number(162.5 * hourlyRate));
+    setReducedAnnualWork(Number((offTime * 9.332) / 100).toFixed(2));
+    setReducedAnnualWorkAmount(
+      -Number(reducedAnnualWork * hourlyRate).toFixed(2)
+    );
+    setSrAmount(safetyRepresentativeHours * 15);
+    setOvertimeBaseSalary(Number(overtimeOffshoreHours * hourlyRate));
+    setOvertimeExtraPercentage(Number(overtimeBaseSalary));
+    setTotalOffshorePremium(
+      Number((offshorePremium * totalOffshoreHours).toFixed(2))
+    );
+    setTaxWithholding(-Number(brutto * taxPercentage) / 100);
+    
+    
+    setTotalOffshoreHours(parseInt(offTime) + parseInt(overtimeOffshoreHours));
+  
+
+  
+
+    console.log(offTime);
+    console.log(overtimeOffshoreHours);
+    console.log(totalOffshoreHours);
+    setGrossTotal(Number(brutto));
+
+    //check unionName
+    if (unionName === "FF") {
+      setUnionFees(-Number(((brutto - travelExpenses) * 1.5) / 100).toFixed(2));
+    } else if (unionName === "Safe") {
+      setUnionFees(-Number(460));
+      setClubDeduction(-Number(40));
+    } else if (unionName === "Parat") {
+      setUnionFees(-Number(520));
+      setClubDeduction(-Number(40));
+    } else {
+      setUnionFees(Number(0));
+      setClubDeduction(Number(0));
+    }
+
+    setNetSalary(
+      Number(
+        grossTotal +
+          taxWithholding +
+          clubDeduction +
+          employeeInsuranceCost +
+          unionFees
+      ).toFixed(2)
+    );
+  });
+
   useEffect(() => {
-    const calculateLonn = () => {
-      const brutto = (
-        monthlySalary +
-        reducedAnnualWorkAmount +
-        overtimeBaseSalary +
-        overtimeExtraPercentage +
-        totalOffshorePremium +
-        srAmount +
-        Number(travelExpenses)
-      ).toFixed(2);
-
-      setMonthlySalary(Number(162.5 * hourlyRate));
-      setReducedAnnualWork(Number((offTime * 9.332) / 100).toFixed(2));
-      setReducedAnnualWorkAmount(
-        -Number(reducedAnnualWork * hourlyRate).toFixed(2)
-      );
-      setSrAmount(safetyRepresentativeHours * 15);
-      setOvertimeBaseSalary(Number(overtimeOffshoreHours * hourlyRate));
-      setOvertimeExtraPercentage(Number(overtimeBaseSalary));
-      setTotalOffshorePremium(
-        Number((offshorePremium * totalOffshoreHours).toFixed(2))
-      );
-      setTaxWithholding(-Number(brutto * taxPercentage) / 100);
-      setTotalOffshoreHours(Number(offTime + overtimeOffshoreHours));
-      setGrossTotal(Number(brutto));
-
-      //check unionName
-      if (unionName === "FF") {
-        setUnionFees(
-          -Number(((brutto - travelExpenses) * 1.5) / 100).toFixed(2)
-        );
-      } else if (unionName === "Safe") {
-        setUnionFees(-Number(460));
-        setClubDeduction(-Number(40));
-      } else if (unionName === "Parat") {
-        setUnionFees(-Number(520));
-        setClubDeduction(-Number(40));
-      } else {
-        setUnionFees(Number(0));
-        setClubDeduction(Number(0));
-      }
-
-      setNetSalary(
-        Number(
-          grossTotal +
-            taxWithholding +
-            clubDeduction +
-            employeeInsuranceCost +
-            unionFees
-        ).toFixed(2)
-      );
-    };
+    calculateSalary();
     console.log(unionName);
-
-    calculateLonn();
   }, [
     isValid,
     grossTotal,
@@ -129,24 +138,23 @@ export default function MainScreen() {
     offTime: { setter: setOffTime, validator: validate },
     hourlyRate: { setter: setHourlyRate, validator: validate },
     taxPercentage: { setter: setTaxPercentage, validator: validate },
-    overtimeOffshoreHours: {setter: setOvertimeOffshoreHours, validator: validate},
-    offshorePremium: {setter: setOffshorePremium, validator: validate},
-    travelExpenses: {setter: setTravelExpenses, validator: validate},
-    safetyRepresentativeHours: {setter: setSafetyRepresentativeHours, validator: validate},
-
-  }
-
+    overtimeOffshoreHours: {
+      setter: setOvertimeOffshoreHours,
+      validator: validate,
+    },
+    offshorePremium: { setter: setOffshorePremium, validator: validate },
+    travelExpenses: { setter: setTravelExpenses, validator: validate },
+    safetyRepresentativeHours: {
+      setter: setSafetyRepresentativeHours,
+      validator: validate,
+    },
+  };
 
   const handleValidation = (field, event) => {
     const value = event.target.value;
     fields[field].setter(value);
     fields[field].validator({ [field]: value });
-  }
-
-
-  
-
-  
+  };
 
   return (
     <div className="small-container">
@@ -157,7 +165,7 @@ export default function MainScreen() {
               <Form.Label column>Off/Timer</Form.Label>
               <Col>
                 <Form.Control
-                min={0}
+                  min={0}
                   className="bg-light"
                   type="number"
                   isInvalid={!!errors.offTime}
@@ -181,7 +189,9 @@ export default function MainScreen() {
                   className="bg-light"
                   type="number"
                   value={overtimeOffshoreHours}
-                  onChange={(event) => handleValidation("overtimeOffshoreHours", event)}
+                  onChange={(event) =>
+                    handleValidation("overtimeOffshoreHours", event)
+                  }
                   isInvalid={!!errors.overtimeOffshoreHours}
                   required
                 ></Form.Control>
@@ -194,12 +204,14 @@ export default function MainScreen() {
               <Form.Label column>Off/tillegg</Form.Label>
               <Col>
                 <Form.Control
-                min={0}
+                  min={0}
                   className="bg-light"
                   type="number"
                   value={offshorePremium}
                   isInvalid={!!errors.offshorePremium}
-                  onChange={(event)=>handleValidation("offshorePremium", event)}
+                  onChange={(event) =>
+                    handleValidation("offshorePremium", event)
+                  }
                   required
                 ></Form.Control>
                 <Form.Control.Feedback type="invalid">
@@ -211,12 +223,14 @@ export default function MainScreen() {
               <Form.Label column>Reise</Form.Label>
               <Col>
                 <Form.Control
-                min={0}
+                  min={0}
                   className="bg-light"
                   type="number"
                   value={travelExpenses}
                   isInvalid={!!errors.travelExpenses}
-                  onChange={(event)=> handleValidation("travelExpenses", event)}
+                  onChange={(event) =>
+                    handleValidation("travelExpenses", event)
+                  }
                   required
                 ></Form.Control>
                 <Form.Control.Feedback type="invalid">
@@ -233,7 +247,7 @@ export default function MainScreen() {
                   className="bg-light "
                   type="number"
                   value={hourlyRate}
-                  onChange={(event)=> handleValidation("hourlyRate", event)}
+                  onChange={(event) => handleValidation("hourlyRate", event)}
                   isInvalid={!!errors.hourlyRate}
                   required
                 ></Form.Control>
@@ -250,7 +264,9 @@ export default function MainScreen() {
                   className="bg-light "
                   type="number"
                   value={safetyRepresentativeHours}
-                  onChange={(event)=>handleValidation("safetyRepresentativeHours", event)}
+                  onChange={(event) =>
+                    handleValidation("safetyRepresentativeHours", event)
+                  }
                   isInvalid={!!errors.safetyRepresentativeHours}
                   required
                 ></Form.Control>
@@ -271,7 +287,7 @@ export default function MainScreen() {
                   type="number"
                   isInvalid={!!errors.taxPercentage}
                   value={taxPercentage}
-                  onChange={(event) => handleValidation("taxPercentage", event)} 
+                  onChange={(event) => handleValidation("taxPercentage", event)}
                   required
                 ></Form.Control>
                 <Form.Control.Feedback type="invalid">
