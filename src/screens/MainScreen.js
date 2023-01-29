@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState, useCallback } from "react";
+import React, { useEffect, useReducer, useState, useCallback, useMemo } from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
@@ -39,34 +39,86 @@ export default function MainScreen() {
   const [clubDeduction, setClubDeduction] = useState(0);
   const [travelExpenses, setTravelExpenses] = useState(0);
   const { errors, isValid, validate } = useValidate(schema);
+  const [brutto, setBrutto] = useState(0);
 
   const employeeInsuranceCost = -39;
 
+  const calculateMonthlySalary = useCallback(() => {
+    return 162.5 * hourlyRate;
+  }, [hourlyRate]);
+
+  const calculateReducedAnnualWorkAmount = useCallback(() => {
+    return parseFloat(((offTime * 9.332) / 100).toFixed(2));
+  }, [offTime]);
+
+  const calculateReducedAnnualWork = useCallback(() => {
+    return -parseFloat((reducedAnnualWork * hourlyRate).toFixed(2));
+  }, [reducedAnnualWork, hourlyRate]);
+
+  const calculateSRAmount = useCallback(() => {
+    return safetyRepresentativeHours * 15;
+  }, [safetyRepresentativeHours]);
+
+  const calculateOvertimeBaseSalary = useCallback(() => {
+    return overtimeOffshoreHours * hourlyRate;
+  }, [hourlyRate, overtimeOffshoreHours]);
+
+  const calculateOvertimeExtraPercentage = useCallback(() => {
+    return overtimeBaseSalary;
+  }, [overtimeBaseSalary]);
+
+  const calculateTotalOffshorePremium = useCallback(() => {
+    return offshorePremium * totalOffshoreHours;
+  }, [offshorePremium, totalOffshoreHours]);
+
+  const calculateTaxWithholding = useCallback(() => {
+    return -(brutto * taxPercentage) / 100;
+  }, [brutto, taxPercentage]);
+
+  const calculateTotalOffshoreHours = useCallback(() => {
+    return offTime + overtimeOffshoreHours;
+  }, [offTime, overtimeOffshoreHours]);
+
+  const calculateGrossTotal = useCallback(() => {
+    return brutto;
+  }, [brutto]);
+
+  const calculateUnionFees = useCallback(() => {
+    switch (unionName) {
+      case "FF":
+        return -((brutto - travelExpenses) * 1.5) / 100;
+      case "Safe":
+        return -460;
+      case "Parat":
+        return -520;
+      default:
+        return 0;
+    }
+  }, [brutto, travelExpenses, unionName]);
+
+  
   const calculateSalary = useCallback(() => {
-    const brutto =
+    setBrutto(
       monthlySalary +
-      reducedAnnualWorkAmount +
-      overtimeBaseSalary +
-      overtimeExtraPercentage +
-      totalOffshorePremium +
-      srAmount +
-      travelExpenses;
-
-    setMonthlySalary(162.5 * hourlyRate);
-    console.log(offTime);
-    setReducedAnnualWork(parseFloat(((offTime * 9.332) / 100).toFixed(2)));
-    setReducedAnnualWorkAmount(
-      -parseFloat((reducedAnnualWork * hourlyRate).toFixed(2))
+        reducedAnnualWorkAmount +
+        overtimeBaseSalary +
+        overtimeExtraPercentage +
+        totalOffshorePremium +
+        srAmount +
+        travelExpenses
     );
-    setSrAmount(safetyRepresentativeHours * 15);
-    setOvertimeBaseSalary(overtimeOffshoreHours * hourlyRate);
-    setOvertimeExtraPercentage(overtimeBaseSalary);
-    setTotalOffshorePremium(offshorePremium * totalOffshoreHours);
-    setTaxWithholding(-(brutto * taxPercentage) / 100);
 
-    setTotalOffshoreHours(offTime + overtimeOffshoreHours);
-
-    setGrossTotal(brutto);
+    setMonthlySalary(calculateMonthlySalary());
+    setReducedAnnualWork(calculateReducedAnnualWorkAmount());
+    setReducedAnnualWorkAmount(calculateReducedAnnualWork());
+    setSrAmount(calculateSRAmount());
+    setOvertimeBaseSalary(calculateOvertimeBaseSalary());
+    setOvertimeExtraPercentage(calculateOvertimeExtraPercentage());
+    setTotalOffshorePremium(calculateTotalOffshorePremium());
+    setTaxWithholding(calculateTaxWithholding());
+    setTotalOffshoreHours(calculateTotalOffshoreHours());
+    setGrossTotal(calculateGrossTotal());
+    setUnionFees(calculateUnionFees());
 
     //check unionName
     if (unionName === "FF") {
@@ -90,27 +142,31 @@ export default function MainScreen() {
         unionFees
     );
   }, [
-    hourlyRate,
+    brutto,
+    calculateGrossTotal,
+    calculateMonthlySalary,
+    calculateOvertimeBaseSalary,
+    calculateOvertimeExtraPercentage,
+    calculateReducedAnnualWork,
+    calculateReducedAnnualWorkAmount,
+    calculateSRAmount,
+    calculateTaxWithholding,
+    calculateTotalOffshoreHours,
+    calculateTotalOffshorePremium,
+    calculateUnionFees,
+    clubDeduction,
+    employeeInsuranceCost,
+    grossTotal,
     monthlySalary,
-    reducedAnnualWorkAmount,
     overtimeBaseSalary,
     overtimeExtraPercentage,
-    totalOffshorePremium,
+    reducedAnnualWorkAmount,
     srAmount,
-    travelExpenses,
-    offTime,
-    overtimeOffshoreHours,
-    taxPercentage,
-    unionName,
-    employeeInsuranceCost,
-    clubDeduction,
-    grossTotal,
-    offshorePremium,
-    reducedAnnualWork,
-    safetyRepresentativeHours,
     taxWithholding,
-    totalOffshoreHours,
+    totalOffshorePremium,
+    travelExpenses,
     unionFees,
+    unionName,
   ]);
 
   useEffect(() => {
