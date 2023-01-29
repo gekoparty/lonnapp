@@ -435,12 +435,14 @@ export default function MainScreen() {
             <Form.Group as={Row} className="mb-3" controlId="sumTimer">
               <Form.Label column>Sum Timer</Form.Label>
               <Col>
-                <Form.Control
+                <NumericFormat customInput={Form.Control}
+                  type={"text"}
+                  decimalScale={2}
                   className="bg-light"
                   //type="number"
                   value={totalOffshoreHours}
                   disabled
-                ></Form.Control>
+                ></NumericFormat>
               </Col>
             </Form.Group>
           </Form>
@@ -460,6 +462,7 @@ export default function MainScreen() {
                   label={"Månedslønn"}
                   id={"monthlySalary"}
                   value={value}
+                  readOnly={true}
                 />
               )}
             />
@@ -477,6 +480,7 @@ export default function MainScreen() {
                     label={"ReiseOpp"}
                     id={"ReiseOpp"}
                     value={value}
+                    readOnly={true}
                   />
                 )}
               />
@@ -498,6 +502,7 @@ export default function MainScreen() {
                     label={"Beløp Red/Verk"}
                     id={"reducedAnnualWorkAmount"}
                     value={value}
+                    readOnly={true}
                   />
                 )}
               />
@@ -518,6 +523,7 @@ export default function MainScreen() {
                     label={"Overtid Grunnlonn"}
                     id={"overtimeBaseSalary"}
                     value={value}
+                    readOnly={true}
                   />
                 )}
               />
@@ -536,6 +542,7 @@ export default function MainScreen() {
                     label={"Overtid 100%"}
                     id={"overtidEkstra100"}
                     value={value}
+                    readOnly={true}
                   />
                 )}
               />
@@ -554,6 +561,7 @@ export default function MainScreen() {
                     label={"Off/Tillegg"}
                     id={"offshoretillegg"}
                     value={value}
+                    readOnly={true}
                   />
                 )}
               />
@@ -574,6 +582,7 @@ export default function MainScreen() {
                     label={"Verneombud"}
                     id={"srAmount"}
                     value={value}
+                    readOnly={true}
                   />
                 )}
               />
@@ -594,6 +603,7 @@ export default function MainScreen() {
                   label={"Brutto"}
                   id={"grossTotal"}
                   value={value}
+                  readOnly={true}
                 />
               )}
             />
@@ -611,6 +621,7 @@ export default function MainScreen() {
                     label={"Fagforening"}
                     id={"unionName"}
                     value={value}
+                    readOnly={true}
                   />
                 )}
               />
@@ -630,6 +641,7 @@ export default function MainScreen() {
                   label={"Egenandel Fors"}
                   id={"employeeInsuranceCos"}
                   value={value}
+                  readOnly={true}
                 />
               )}
             />
@@ -647,6 +659,7 @@ export default function MainScreen() {
                     label={"Klubbtrekk"}
                     id={clubDeduction}
                     value={value}
+                    readOnly={true}
                   />
                 )}
               />
@@ -667,6 +680,7 @@ export default function MainScreen() {
                   label={"Skattetrekk"}
                   id="taxWithholding"
                   value={value}
+                  readOnly={true}
                 />
               )}
             />
@@ -684,6 +698,7 @@ export default function MainScreen() {
                   label={"Netto Utbetalt"}
                   id={"netSalary"}
                   value={value}
+                  readOnly={true}
                 />
               )}
             />
