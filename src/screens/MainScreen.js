@@ -45,8 +45,9 @@ export default function MainScreen() {
   const calculations = {
     monthlySalary: (hourlyRate) => 162.5 * hourlyRate,
     reducedAnnualWorkAmount: (offTime) =>
-      parseFloat(((offTime * 9.332) / 100).toFixed(2)),
+    (offTime / 168) * 15.68,
     reducedAnnualWork: (reducedAnnualWork, hourlyRate) =>
+    
       -parseFloat((reducedAnnualWork * hourlyRate).toFixed(2)),
     SRAmount: (safetyRepresentativeHours) => safetyRepresentativeHours * 15,
     overtimeBaseSalary: (hourlyRate, overtimeOffshoreHours) =>
@@ -272,6 +273,7 @@ export default function MainScreen() {
                   allowNegative={false}
                   className="bg-light"
                   //type="number"
+                  allowLeadingZeros={false}
                   isInvalid={!!errors.offTime}
                   defaultValue={offTime}
                   suffix={" T"}
@@ -345,6 +347,7 @@ export default function MainScreen() {
                   customInput={Form.Control}
                   className="bg-light"
                   //type="number"
+                  allowLeadingZeros={false}
                   defaultValue={travelExpenses}
                   suffix={" Kr"}
                   isInvalid={!!errors.travelExpenses}
@@ -370,6 +373,7 @@ export default function MainScreen() {
                   className="bg-light "
                   defaultValue={hourlyRate}
                   suffix={" Kr"}
+                  allowLeadingZeros={false}
                   isInvalid={!!errors.hourlyRate}
                   required
                   onValueChange={(values) => {
@@ -477,12 +481,14 @@ export default function MainScreen() {
             <Form.Group as={Row} className="mb-3" controlId="skatt">
               <Form.Label column>Redusert Årsverk</Form.Label>
               <Col>
-                <Form.Control
+                <NumericFormat customInput={Form.Control}
+                  type={"text"}
+                  decimalScale={2}
                   className="bg-light"
                   //type="number"
                   value={reducedAnnualWork}
                   disabled
-                ></Form.Control>
+                ></NumericFormat>
               </Col>
             </Form.Group>
             <Form.Group as={Row} className="mb-3" controlId="sumTimer">
