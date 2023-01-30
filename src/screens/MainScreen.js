@@ -1,18 +1,13 @@
-import React, {
-  useEffect,
-  
-  useState,
-  useCallback,
-} from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
-import FormInput from "../components/FormInput";
+import FormResult from "../components/FormResult";
 import schema from "../validations/schema";
 import useValidate from "../validations/useValidate";
 import { NumericFormat } from "react-number-format";
-import calculations from "../calculate/calculate";
-
+import calculations from "../calculate.js/calculate";
+import FormNumeric from "../components/FormNumeric";
 
 export default function MainScreen() {
   const [offTime, setOffTime] = useState(168);
@@ -42,8 +37,6 @@ export default function MainScreen() {
   const [brutto, setBrutto] = useState(0);
 
   const employeeInsuranceCost = -39;
-
-  
 
   const useCalculation = (name, ...params) => {
     const calculation = calculations[name];
@@ -193,14 +186,19 @@ export default function MainScreen() {
   };
 
   const handleValidation = (field, value) => {
-    fields[field].setter(value);
-    fields[field].validator({ [field]: value });
+    const newValue = value || 0; // check if value is falsy, if so set to 0
+    fields[field].setter(newValue);
+    fields[field].validator({ [field]: newValue });
   };
 
   return (
     <div
       className="small-container"
-      style={{ marginTop: "10px", border: "solid 2px" , backgroundColor: "#E0E0E0"}}
+      style={{
+        marginTop: "10px",
+        border: "solid 2px",
+        backgroundColor: "#E0E0E0",
+      }}
     >
       <Row style={{ margin: "auto", marginTop: "10px" }}>
         <Col lg={3}>
@@ -208,27 +206,13 @@ export default function MainScreen() {
             <Form.Group as={Row} className="mb-3" controlId="timer">
               <Form.Label column>Off/Timer</Form.Label>
               <Col>
-                <NumericFormat
-                  customInput={Form.Control}
-                  min={0}
-                  allowNegative={false}
-                  className="bg-light"
-                  //type="number"
-                  allowLeadingZeros={false}
-                  isInvalid={!!errors.offTime}
-                  defaultValue={offTime}
+                <FormNumeric
+                  id={"offTime"}
+                  errors={errors}
+                  value={offTime}
                   suffix={" T"}
-                  onValueChange={(values) => {
-                    console.log(values);
-                    const { floatValue } = values;
-                    console.log(floatValue);
-                    handleValidation("offTime", floatValue);
-                  }}
-                  required
-                ></NumericFormat>
-                <Form.Control.Feedback type="invalid">
-                  {errors.offTime}
-                </Form.Control.Feedback>
+                  handleValidation={handleValidation}
+                />
               </Col>
             </Form.Group>
             <Form.Group
@@ -238,142 +222,75 @@ export default function MainScreen() {
             >
               <Form.Label column>Overtid Off</Form.Label>
               <Col>
-                <NumericFormat
-                  customInput={Form.Control}
-                  allowNegative={false}
-                  className="bg-light"
-                  //type="number"
-                  defaultValue={overtimeOffshoreHours}
+                <FormNumeric
+                  id={"overtimeOffshoreHours"}
+                  errors={errors}
                   suffix={" T"}
-                  isInvalid={!!errors.overtimeOffshoreHours}
-                  required
-                  onValueChange={(values) => {
-                    const { floatValue } = values;
-                    handleValidation("overtimeOffshoreHours", floatValue);
-                  }}
-                ></NumericFormat>
-                <Form.Control.Feedback type="invalid">
-                  {errors.overtimeOffshoreHours}
-                </Form.Control.Feedback>
+                  handleValidation={handleValidation}
+                  value={overtimeOffshoreHours}
+                />
               </Col>
             </Form.Group>
             <Form.Group as={Row} className="mb-3" controlId="offshorePremium">
               <Form.Label column>Off/tillegg</Form.Label>
               <Col>
-                <NumericFormat
+                <FormNumeric
                   min={0}
-                  allowNegative={false}
-                  customInput={Form.Control}
-                  className="bg-light"
+                  id={"offshorePremium"}
+                  errors={errors}
                   suffix={" Kr"}
-                  defaultValue={offshorePremium}
-                  isInvalid={!!errors.offshorePremium}
-                  required
-                  onValueChange={(values) => {
-                    const { floatValue } = values;
-                    handleValidation("offshorePremium", floatValue);
-                  }}
-                ></NumericFormat>
-                <Form.Control.Feedback type="invalid">
-                  {errors.offshorePremium}
-                </Form.Control.Feedback>
+                  value={offshorePremium}
+                  handleValidation={handleValidation}
+                />
               </Col>
             </Form.Group>
             <Form.Group as={Row} className="mb-3" controlId="travelExpenses">
               <Form.Label column>Reise</Form.Label>
               <Col>
-                <NumericFormat
-                  min={0}
-                  allowNegative={false}
-                  customInput={Form.Control}
-                  className="bg-light"
-                  //type="number"
-                  allowLeadingZeros={false}
-                  defaultValue={travelExpenses}
+                <FormNumeric
+                  id={"travelExpenses"}
+                  errors={errors}
+                  value={travelExpenses}
                   suffix={" Kr"}
-                  isInvalid={!!errors.travelExpenses}
-                  required
-                  onValueChange={(values) => {
-                    const { floatValue } = values;
-                    handleValidation("travelExpenses", floatValue);
-                  }}
-                ></NumericFormat>
-                <Form.Control.Feedback type="invalid">
-                  {errors.travelExpenses}
-                </Form.Control.Feedback>
+                  handleValidation={handleValidation}
+                />
               </Col>
             </Form.Group>
             <Form.Group as={Row} className="mb-3" controlId="lonn">
               <Form.Label column>TimeSats</Form.Label>
               <Col>
-                <NumericFormat
-                  min={0}
-                  allowNegative={false}
-                  customInput={Form.Control}
-                  //onKeyDown={(e) => e.key === "-" && e.preventDefault()}
-                  className="bg-light "
-                  defaultValue={hourlyRate}
+                <FormNumeric
+                  id={"hourlyRate"}
+                  errors={errors}
                   suffix={" Kr"}
-                  allowLeadingZeros={false}
-                  isInvalid={!!errors.hourlyRate}
-                  required
-                  onValueChange={(values) => {
-                    const { floatValue } = values;
-                    handleValidation("hourlyRate", floatValue);
-                  }}
-                ></NumericFormat>
-                <Form.Control.Feedback type="invalid">
-                  {errors.hourlyRate}
-                </Form.Control.Feedback>
+                  value={hourlyRate}
+                  handleValidation={handleValidation}
+                />
               </Col>
             </Form.Group>
             <Form.Group as={Row} className="mb-3" controlId="safetyHours">
               <Form.Label column>VO Timer</Form.Label>
               <Col>
-                <NumericFormat
-                  min={0}
-                  allowNegative={false}
-                  customInput={Form.Control}
-                  className="bg-light "
-                  //type="number"
-                  defaultValue={safetyRepresentativeHours}
+                <FormNumeric
+                  id={"safetyRepresentativeHours"}
+                  errors={errors}
                   suffix={" T"}
-                  isInvalid={!!errors.safetyRepresentativeHours}
-                  required
-                  onValueChange={(values) => {
-                    const { floatValue } = values;
-                    handleValidation("safetyRepresentativeHours", floatValue);
-                  }}
-                ></NumericFormat>
-                <Form.Control.Feedback type="invalid">
-                  {errors.safetyRepresentativeHours}
-                </Form.Control.Feedback>
+                  value={safetyRepresentativeHours}
+                  handleValidation={handleValidation}
+                />
               </Col>
             </Form.Group>
 
             <Form.Group as={Row} className="mb-3" controlId="skatt">
               <Form.Label column>Skatt</Form.Label>
               <Col>
-                <NumericFormat
-                  min={0}
-                  max={100}
-                  allowNegative={false}
-                  customInput={Form.Control}
-                  //onKeyDown={(e) => e.key === "-" && e.preventDefault()}
-                  className="bg-light"
-                  //type="number"
-                  isInvalid={!!errors.taxPercentage}
-                  defaultValue={taxPercentage}
+                <FormNumeric
+                  id={"taxPercentage"}
+                  errors={errors}
                   suffix={" %"}
-                  onValueChange={(values) => {
-                    const { floatValue } = values;
-                    handleValidation("taxPercentage", floatValue);
-                  }}
-                  required
-                ></NumericFormat>
-                <Form.Control.Feedback type="invalid">
-                  {errors.taxPercentage}
-                </Form.Control.Feedback>
+                  value={taxPercentage}
+                  handleValidation={handleValidation}
+                />
               </Col>
             </Form.Group>
 
@@ -422,7 +339,8 @@ export default function MainScreen() {
             <Form.Group as={Row} className="mb-3" controlId="skatt">
               <Form.Label column>Redusert Årsverk</Form.Label>
               <Col>
-                <NumericFormat customInput={Form.Control}
+                <NumericFormat
+                  customInput={Form.Control}
                   type={"text"}
                   decimalScale={2}
                   className="bg-light"
@@ -435,12 +353,15 @@ export default function MainScreen() {
             <Form.Group as={Row} className="mb-3" controlId="sumTimer">
               <Form.Label column>Sum Timer</Form.Label>
               <Col>
-                <Form.Control
+                <NumericFormat
+                  customInput={Form.Control}
+                  type={"text"}
+                  decimalScale={2}
                   className="bg-light"
                   //type="number"
                   value={totalOffshoreHours}
                   disabled
-                ></Form.Control>
+                ></NumericFormat>
               </Col>
             </Form.Group>
           </Form>
@@ -455,11 +376,12 @@ export default function MainScreen() {
               fixedDecimalScale={false}
               decimalScale={2}
               renderText={(value) => (
-                <FormInput
+                <FormResult
                   type={""}
                   label={"Månedslønn"}
                   id={"monthlySalary"}
                   value={value}
+                  readOnly={true}
                 />
               )}
             />
@@ -472,11 +394,12 @@ export default function MainScreen() {
                 fixedDecimalScale={false}
                 decimalScal={2}
                 renderText={(value) => (
-                  <FormInput
+                  <FormResult
                     type={""}
                     label={"ReiseOpp"}
                     id={"ReiseOpp"}
                     value={value}
+                    readOnly={true}
                   />
                 )}
               />
@@ -493,11 +416,12 @@ export default function MainScreen() {
                 fixedDecimalScale={false}
                 decimalScale={2}
                 renderText={(value) => (
-                  <FormInput
+                  <FormResult
                     type={""}
                     label={"Beløp Red/Verk"}
                     id={"reducedAnnualWorkAmount"}
                     value={value}
+                    readOnly={true}
                   />
                 )}
               />
@@ -513,11 +437,12 @@ export default function MainScreen() {
                 decimalScale={2}
                 fixedDecimalScale={false}
                 renderText={(value) => (
-                  <FormInput
+                  <FormResult
                     type={""}
                     label={"Overtid Grunnlonn"}
                     id={"overtimeBaseSalary"}
                     value={value}
+                    readOnly={true}
                   />
                 )}
               />
@@ -531,11 +456,12 @@ export default function MainScreen() {
                 decimalScale={2}
                 fixedDecimalScale={false}
                 renderText={(value) => (
-                  <FormInput
+                  <FormResult
                     type={""}
                     label={"Overtid 100%"}
                     id={"overtidEkstra100"}
                     value={value}
+                    readOnly={true}
                   />
                 )}
               />
@@ -549,11 +475,12 @@ export default function MainScreen() {
                 decimalScale={2}
                 fixedDecimalScale={false}
                 renderText={(value) => (
-                  <FormInput
+                  <FormResult
                     type={""}
                     label={"Off/Tillegg"}
                     id={"offshoretillegg"}
                     value={value}
+                    readOnly={true}
                   />
                 )}
               />
@@ -569,11 +496,12 @@ export default function MainScreen() {
                 decimalScale={2}
                 fixedDecimalScale={false}
                 renderText={(value) => (
-                  <FormInput
+                  <FormResult
                     type={""}
                     label={"Verneombud"}
                     id={"srAmount"}
                     value={value}
+                    readOnly={true}
                   />
                 )}
               />
@@ -589,11 +517,12 @@ export default function MainScreen() {
               decimalScale={2}
               fixedDecimalScale={false}
               renderText={(value) => (
-                <FormInput
+                <FormResult
                   type={""}
                   label={"Brutto"}
                   id={"grossTotal"}
                   value={value}
+                  readOnly={true}
                 />
               )}
             />
@@ -606,11 +535,12 @@ export default function MainScreen() {
                 decimalScale={2}
                 fixedDecimalScale={true}
                 renderText={(value) => (
-                  <FormInput
+                  <FormResult
                     type={""}
                     label={"Fagforening"}
                     id={"unionName"}
                     value={value}
+                    readOnly={true}
                   />
                 )}
               />
@@ -625,11 +555,12 @@ export default function MainScreen() {
               decimalScale={2}
               fixedDecimalScale={false}
               renderText={(value) => (
-                <FormInput
+                <FormResult
                   type={""}
                   label={"Egenandel Fors"}
                   id={"employeeInsuranceCos"}
                   value={value}
+                  readOnly={true}
                 />
               )}
             />
@@ -642,11 +573,12 @@ export default function MainScreen() {
                 decimalScale={2}
                 fixedDecimalScale={false}
                 renderText={(value) => (
-                  <FormInput
+                  <FormResult
                     type={""}
                     label={"Klubbtrekk"}
                     id={clubDeduction}
                     value={value}
+                    readOnly={true}
                   />
                 )}
               />
@@ -662,11 +594,12 @@ export default function MainScreen() {
               decimalScale={2}
               fixedDecimalScale={false}
               renderText={(value) => (
-                <FormInput
+                <FormResult
                   type={""}
                   label={"Skattetrekk"}
                   id="taxWithholding"
                   value={value}
+                  readOnly={true}
                 />
               )}
             />
@@ -679,11 +612,12 @@ export default function MainScreen() {
               decimalScale={2}
               fixedDecimalScale={true}
               renderText={(value) => (
-                <FormInput
+                <FormResult
                   type={""}
                   label={"Netto Utbetalt"}
                   id={"netSalary"}
                   value={value}
+                  readOnly={true}
                 />
               )}
             />
