@@ -2,12 +2,11 @@ import React, { useEffect, useState, useCallback } from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
-import FormResult from "../components/FormResult";
 import schema from "../validations/schema";
 import useValidate from "../validations/useValidate";
-import { NumericFormat } from "react-number-format";
 import calculations from "../calculate.js/calculate";
-import FormNumeric from "../components/FormNumeric";
+import FormRadio from "../components/FormRadio";
+import FormDisplay from "../components/FormDisplay";
 
 export default function MainScreen() {
   const [offTime, setOffTime] = useState(168);
@@ -203,126 +202,108 @@ export default function MainScreen() {
       <Row style={{ margin: "auto", marginTop: "10px" }}>
         <Col lg={3}>
           <Form>
-            <Form.Group as={Row} className="mb-3" controlId="timer">
-              <Form.Label column>Off/Timer</Form.Label>
-              <Col>
-                <FormNumeric
-                  id={"offTime"}
-                  errors={errors}
-                  value={offTime}
-                  suffix={" T"}
-                  handleValidation={handleValidation}
-                />
-              </Col>
-            </Form.Group>
-            <Form.Group
-              as={Row}
-              className="mb-3"
-              controlId="overtimeOffshoreHours"
-            >
-              <Form.Label column>Overtid Off</Form.Label>
-              <Col>
-                <FormNumeric
-                  id={"overtimeOffshoreHours"}
-                  errors={errors}
-                  suffix={" T"}
-                  handleValidation={handleValidation}
-                  value={overtimeOffshoreHours}
-                />
-              </Col>
-            </Form.Group>
-            <Form.Group as={Row} className="mb-3" controlId="offshorePremium">
-              <Form.Label column>Off/tillegg</Form.Label>
-              <Col>
-                <FormNumeric
-                  min={0}
-                  id={"offshorePremium"}
-                  errors={errors}
-                  suffix={" Kr"}
-                  value={offshorePremium}
-                  handleValidation={handleValidation}
-                />
-              </Col>
-            </Form.Group>
-            <Form.Group as={Row} className="mb-3" controlId="travelExpenses">
-              <Form.Label column>Reise</Form.Label>
-              <Col>
-                <FormNumeric
-                  id={"travelExpenses"}
-                  errors={errors}
-                  value={travelExpenses}
-                  suffix={" Kr"}
-                  handleValidation={handleValidation}
-                />
-              </Col>
-            </Form.Group>
-            <Form.Group as={Row} className="mb-3" controlId="lonn">
-              <Form.Label column>TimeSats</Form.Label>
-              <Col>
-                <FormNumeric
-                  id={"hourlyRate"}
-                  errors={errors}
-                  suffix={" Kr"}
-                  value={hourlyRate}
-                  handleValidation={handleValidation}
-                />
-              </Col>
-            </Form.Group>
-            <Form.Group as={Row} className="mb-3" controlId="safetyHours">
-              <Form.Label column>VO Timer</Form.Label>
-              <Col>
-                <FormNumeric
-                  id={"safetyRepresentativeHours"}
-                  errors={errors}
-                  suffix={" T"}
-                  value={safetyRepresentativeHours}
-                  handleValidation={handleValidation}
-                />
-              </Col>
-            </Form.Group>
+            <FormDisplay
+              type={"numeric"}
+              controlId={"timer"}
+              label={"Off/Timer"}
+              id={"offTime"}
+              errors={errors}
+              value={offTime}
+              suffix={" T"}
+              handleValidation={handleValidation}
+            />
+            <FormDisplay
+              type={"numeric"}
+              controlId={"overtimeOffshoreHours"}
+              label={"Overtid Off"}
+              id={"overtimeOffshoreHours"}
+              errors={errors}
+              suffix={" T"}
+              handleValidation={handleValidation}
+              value={overtimeOffshoreHours}
+            />
+            <FormDisplay
+              type={"numeric"}
+              label={"Off/Tillegg"}
+              controlId={offshorePremium}
+              min={0}
+              id={"offshorePremium"}
+              errors={errors}
+              suffix={" Kr"}
+              value={offshorePremium}
+              handleValidation={handleValidation}
+            />
+            <FormDisplay
+              type={"numeric"}
+              controlId={"travelExpenses"}
+              label={"Reise"}
+              id={"travelExpenses"}
+              errors={errors}
+              value={travelExpenses}
+              suffix={" Kr"}
+              handleValidation={handleValidation}
+            />
 
-            <Form.Group as={Row} className="mb-3" controlId="skatt">
-              <Form.Label column>Skatt</Form.Label>
-              <Col>
-                <FormNumeric
-                  id={"taxPercentage"}
-                  errors={errors}
-                  suffix={" %"}
-                  value={taxPercentage}
-                  handleValidation={handleValidation}
-                />
-              </Col>
-            </Form.Group>
+            <FormDisplay
+              type={"numeric"}
+              controlId={"lonn"}
+              label={"Timesats"}
+              id={"hourlyRate"}
+              errors={errors}
+              suffix={" Kr"}
+              value={hourlyRate}
+              handleValidation={handleValidation}
+            />
+
+            <FormDisplay
+              type={"numeric"}
+              controlId={"safetyHours"}
+              label={"VO Timer"}
+              id={"safetyRepresentativeHours"}
+              errors={errors}
+              suffix={" T"}
+              value={safetyRepresentativeHours}
+              handleValidation={handleValidation}
+            />
+
+            <FormDisplay
+              type={"numeric"}
+              controlId={"skatt"}
+              label={"Skatt"}
+              id={"taxPercentage"}
+              errors={errors}
+              suffix={" %"}
+              value={taxPercentage}
+              handleValidation={handleValidation}
+            />
 
             <h4>Fagforening</h4>
             <div>
-              <Form.Check
-                inline
-                defaultChecked
+              <FormRadio
                 onChange={(e) => setUnionName("FF")}
                 label="FF"
                 name="group1"
                 type={"radio"}
                 id="group1"
+                defaultChecked
               />
-              <Form.Check
-                inline
+
+              <FormRadio
                 onChange={(e) => setUnionName("Safe")}
                 label="Safe"
                 name="group1"
                 type={"radio"}
                 id="group2"
               />
-              <Form.Check
-                inline
+
+              <FormRadio
                 onChange={(e) => setUnionName("Parat")}
                 label="Parat"
                 name="group1"
                 type={"radio"}
                 id="group3"
               />
-              <Form.Check
-                inline
+              <FormRadio
                 onChange={(e) => setUnionName("UO")}
                 label="UO"
                 name="group1"
@@ -333,293 +314,147 @@ export default function MainScreen() {
           </Form>
         </Col>
         <Col lg={4}>
-          {/* <h4>Netto Utbetalt</h4>
-          <div>{netSalary}</div> */}
           <Form>
-            <Form.Group as={Row} className="mb-3" controlId="skatt">
-              <Form.Label column>Redusert Årsverk</Form.Label>
-              <Col>
-                <NumericFormat
-                  customInput={Form.Control}
-                  type={"text"}
-                  decimalScale={2}
-                  className="bg-light"
-                  //type="number"
-                  value={reducedAnnualWork}
-                  disabled
-                ></NumericFormat>
-              </Col>
-            </Form.Group>
-            <Form.Group as={Row} className="mb-3" controlId="sumTimer">
-              <Form.Label column>Sum Timer</Form.Label>
-              <Col>
-                <NumericFormat
-                  customInput={Form.Control}
-                  type={"text"}
-                  decimalScale={2}
-                  className="bg-light"
-                  //type="number"
-                  value={totalOffshoreHours}
-                  disabled
-                ></NumericFormat>
-              </Col>
-            </Form.Group>
+            <FormDisplay
+              type={"text"}
+              label={"Redusert Årsverk"}
+              value={reducedAnnualWork}
+              suffix={" T"}
+              id={"reducedAnnualWork"}
+            />
+            <FormDisplay
+              type={"text"}
+              label={"Sum Timer"}
+              value={totalOffshoreHours}
+              suffix={" T"}
+              id={"totalOffshoreHours"}
+            />
           </Form>
         </Col>
         <Col md={3}>
           <Form>
-            <NumericFormat
-              displayType={"text"}
-              thousandSeparator={true}
+            <FormDisplay
+              type={"text"}
               value={monthlySalary}
               suffix={" Kr"}
-              fixedDecimalScale={false}
-              decimalScale={2}
-              renderText={(value) => (
-                <FormResult
-                  type={""}
-                  label={"Månedslønn"}
-                  id={"monthlySalary"}
-                  value={value}
-                  readOnly={true}
-                />
-              )}
+              label={"Månedslønn"}
+              id={"monthlySalary"}
             />
             {travelExpenses > 0 ? (
-              <NumericFormat
-                displayType={"text"}
-                thousandSeparator={true}
+              <FormDisplay
+                type={"text"}
                 value={travelExpenses}
                 suffix={" Kr"}
-                fixedDecimalScale={false}
-                decimalScal={2}
-                renderText={(value) => (
-                  <FormResult
-                    type={""}
-                    label={"ReiseOpp"}
-                    id={"ReiseOpp"}
-                    value={value}
-                    readOnly={true}
-                  />
-                )}
+                label={"ReiseOpp"}
+                id={"travelExpenses"}
               />
             ) : (
               ""
             )}
 
             {offTime > 0 ? (
-              <NumericFormat
-                displayType={"text"}
-                thousandSeparator={true}
+              <FormDisplay
+                type={"text"}
                 value={reducedAnnualWorkAmount}
                 suffix={" Kr"}
-                fixedDecimalScale={false}
-                decimalScale={2}
-                renderText={(value) => (
-                  <FormResult
-                    type={""}
-                    label={"Beløp Red/Verk"}
-                    id={"reducedAnnualWorkAmount"}
-                    value={value}
-                    readOnly={true}
-                  />
-                )}
+                label={"Beløp Red/Verk"}
+                id={"reducedAnnualWorkAmount"}
               />
             ) : (
               ""
             )}
             {overtimeBaseSalary > 0 && (
-              <NumericFormat
+              <FormDisplay
                 value={overtimeBaseSalary}
-                thousandSeparator={true}
-                displayType={"text"}
+                type={"text"}
                 suffix={" Kr"}
-                decimalScale={2}
-                fixedDecimalScale={false}
-                renderText={(value) => (
-                  <FormResult
-                    type={""}
-                    label={"Overtid Grunnlonn"}
-                    id={"overtimeBaseSalary"}
-                    value={value}
-                    readOnly={true}
-                  />
-                )}
+                label={"Overtid Grunnlønn"}
+                id={"overtimeBaseSalary"}
               />
             )}
             {overtimeExtraPercentage > 0 && (
-              <NumericFormat
+              <FormDisplay
                 value={overtimeExtraPercentage}
-                thousandSeparator={true}
-                displayType={"text"}
+                label={"Overtid 100%"}
+                type={"text"}
                 suffix={" Kr"}
                 decimalScale={2}
-                fixedDecimalScale={false}
-                renderText={(value) => (
-                  <FormResult
-                    type={""}
-                    label={"Overtid 100%"}
-                    id={"overtidEkstra100"}
-                    value={value}
-                    readOnly={true}
-                  />
-                )}
+                id={"overtidEkstra100"}
               />
             )}
             {offTime > 0 ? (
-              <NumericFormat
+              <FormDisplay
                 value={totalOffshorePremium}
-                thousandSeparator={true}
-                displayType={"text"}
+                label={"Off/Tillegg"}
+                type={"text"}
                 suffix={" Kr"}
-                decimalScale={2}
-                fixedDecimalScale={false}
-                renderText={(value) => (
-                  <FormResult
-                    type={""}
-                    label={"Off/Tillegg"}
-                    id={"offshoretillegg"}
-                    value={value}
-                    readOnly={true}
-                  />
-                )}
+                id={"offshoreTillegg"}
               />
             ) : (
               ""
             )}
             {srAmount > 0 ? (
-              <NumericFormat
+              <FormDisplay
                 value={srAmount}
-                thousandSeparator={true}
-                displayType={"text"}
+                label={"Verneombud"}
+                type={"text"}
                 suffix={" Kr"}
-                decimalScale={2}
-                fixedDecimalScale={false}
-                renderText={(value) => (
-                  <FormResult
-                    type={""}
-                    label={"Verneombud"}
-                    id={"srAmount"}
-                    value={value}
-                    readOnly={true}
-                  />
-                )}
+                id={"srAmount"}
               />
             ) : (
               ""
             )}
             <hr />
-            <NumericFormat
+            <FormDisplay
               value={grossTotal}
-              thousandSeparator={true}
-              displayType={"text"}
+              label={"Brutto"}
+              type={"text"}
               suffix={" Kr"}
-              decimalScale={2}
-              fixedDecimalScale={false}
-              renderText={(value) => (
-                <FormResult
-                  type={""}
-                  label={"Brutto"}
-                  id={"grossTotal"}
-                  value={value}
-                  readOnly={true}
-                />
-              )}
+              id={"grossTotal"}
             />
             {unionFees !== 0 ? (
-              <NumericFormat
+              <FormDisplay
                 value={unionFees}
-                thousandSeparator={true}
-                displayType={"text"}
+                label={"Fagforening"}
+                type={"text"}
                 suffix={" Kr"}
-                decimalScale={2}
-                fixedDecimalScale={true}
-                renderText={(value) => (
-                  <FormResult
-                    type={""}
-                    label={"Fagforening"}
-                    id={"unionName"}
-                    value={value}
-                    readOnly={true}
-                  />
-                )}
               />
             ) : (
               ""
             )}
-            <NumericFormat
+            <FormDisplay
               value={employeeInsuranceCost}
-              thousandSeparator={true}
-              displayType={"text"}
+              label={"Egenandel Fors"}
+              type={"text"}
               suffix={" Kr"}
-              decimalScale={2}
-              fixedDecimalScale={false}
-              renderText={(value) => (
-                <FormResult
-                  type={""}
-                  label={"Egenandel Fors"}
-                  id={"employeeInsuranceCos"}
-                  value={value}
-                  readOnly={true}
-                />
-              )}
+              id={"emplyeeInsuranceCos"}
             />
             {clubDeduction !== 0 ? (
-              <NumericFormat
+              <FormDisplay
                 value={clubDeduction}
-                thousandSeparator={true}
-                displayType={"text"}
+                label={"Klubbtrekk"}
+                type={"text"}
                 suffix={" Kr"}
-                decimalScale={2}
-                fixedDecimalScale={false}
-                renderText={(value) => (
-                  <FormResult
-                    type={""}
-                    label={"Klubbtrekk"}
-                    id={clubDeduction}
-                    value={value}
-                    readOnly={true}
-                  />
-                )}
+                id={"clubDeduction"}
               />
             ) : (
               ""
             )}
             <hr />
-            <NumericFormat
+            <FormDisplay
               value={taxWithholding}
-              displayType={"text"}
-              thousandSeparator={true}
+              type={"text"}
+              label={"Skattetrekk"}
               suffix={" Kr"}
-              decimalScale={2}
-              fixedDecimalScale={false}
-              renderText={(value) => (
-                <FormResult
-                  type={""}
-                  label={"Skattetrekk"}
-                  id="taxWithholding"
-                  value={value}
-                  readOnly={true}
-                />
-              )}
+              id={"taxWithholding"}
             />
             <hr />
-            <NumericFormat
+            <FormDisplay
               value={netSalary}
-              displayType={"text"}
-              thousandSeparator={true}
+              type={"text"}
+              label={"Netto Utbetalt"}
               suffix={" Kr"}
-              decimalScale={2}
-              fixedDecimalScale={true}
-              renderText={(value) => (
-                <FormResult
-                  type={""}
-                  label={"Netto Utbetalt"}
-                  id={"netSalary"}
-                  value={value}
-                  readOnly={true}
-                />
-              )}
+              id={"netSalary"}
             />
           </Form>
         </Col>
