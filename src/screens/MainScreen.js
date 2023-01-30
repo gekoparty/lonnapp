@@ -5,8 +5,8 @@ import Form from "react-bootstrap/Form";
 import schema from "../validations/schema";
 import useValidate from "../validations/useValidate";
 import calculations from "../calculate.js/calculate";
-import FormRadio from "../components/FormRadio";
 import FormDisplay from "../components/FormDisplay";
+import Navigation from "../components/Navigation";
 
 export default function MainScreen() {
   const [offTime, setOffTime] = useState(168);
@@ -191,6 +191,7 @@ export default function MainScreen() {
   };
 
   return (
+    
     <div
       className="small-container"
       style={{
@@ -199,6 +200,7 @@ export default function MainScreen() {
         backgroundColor: "#E0E0E0",
       }}
     >
+      <Navigation />
       <Row style={{ margin: "auto", marginTop: "10px" }}>
         <Col lg={3}>
           <Form>
@@ -279,36 +281,37 @@ export default function MainScreen() {
 
             <h4>Fagforening</h4>
             <div>
-              <FormRadio
-                onChange={(e) => setUnionName("FF")}
-                label="FF"
-                name="group1"
-                type={"radio"}
-                id="group1"
-                defaultChecked
-              />
+              <FormDisplay
+              label="FF"
+              id={"group1"}
+              type={"radio"}
+              name={"group1"}
+              defaultChecked={true}
+              onChange={(e) => setUnionName("FF")}
+/>
+             
 
-              <FormRadio
+              <FormDisplay
                 onChange={(e) => setUnionName("Safe")}
                 label="Safe"
                 name="group1"
                 type={"radio"}
-                id="group2"
+                id={"group2"}
               />
 
-              <FormRadio
+              <FormDisplay
                 onChange={(e) => setUnionName("Parat")}
                 label="Parat"
                 name="group1"
                 type={"radio"}
-                id="group3"
+                id={"group3"}
               />
-              <FormRadio
+              <FormDisplay
                 onChange={(e) => setUnionName("UO")}
                 label="UO"
                 name="group1"
                 type={"radio"}
-                id="group3"
+                id={"group3"}
               />
             </div>
           </Form>

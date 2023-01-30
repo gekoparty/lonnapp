@@ -4,7 +4,19 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import { NumericFormat } from "react-number-format";
 
-const FormDisplay = ({ label, id, type = "text", value = "", readOnly = false, errors, handleValidation, suffix }) => {
+const FormDisplay = ({
+  label,
+  id,
+  type = "text",
+  value = "",
+  name,
+  onChange,
+  defaultChecked = false,
+  readOnly = false,
+  errors,
+  handleValidation,
+  suffix,
+}) => {
   if (type === "numeric") {
     return (
       <>
@@ -26,28 +38,42 @@ const FormDisplay = ({ label, id, type = "text", value = "", readOnly = false, e
               }}
               required
             />
-            <Form.Control.Feedback type="invalid">{errors[id]}</Form.Control.Feedback>
+            <Form.Control.Feedback type="invalid">
+              {errors[id]}
+            </Form.Control.Feedback>
           </Col>
         </Form.Group>
       </>
     );
-  } else {
+  } else if (type === "text") {
     return (
       <Form.Group as={Row} className="mb-3" controlId={id}>
         <Form.Label column>{label}</Form.Label>
         <Col>
-        <NumericFormat
-                  customInput={Form.Control}
-                  type={"text"}
-                  readOnly
-                  decimalScale={2}
-                  thousandSeparator={true}
-                  className="text-end"
-                  value={value}
-                  suffix={suffix}
-                ></NumericFormat>
+          <NumericFormat
+            customInput={Form.Control}
+            type={"text"}
+            readOnly
+            decimalScale={2}
+            thousandSeparator={true}
+            className="text-end"
+            value={value}
+            suffix={suffix}
+          ></NumericFormat>
         </Col>
       </Form.Group>
+    );
+  } else {
+    return (
+      <Form.Check
+        inline
+        defaultChecked={defaultChecked}
+        onChange={onChange}
+        label={label}
+        name={name}
+        type={type}
+        id={id}
+      />
     );
   }
 };
