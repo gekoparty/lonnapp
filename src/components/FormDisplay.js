@@ -16,6 +16,7 @@ const FormDisplay = ({
   errors,
   handleValidation,
   suffix,
+ 
 }) => {
   if (type === "numeric") {
     return (
@@ -46,6 +47,7 @@ const FormDisplay = ({
       </>
     );
   } else if (type === "text") {
+    console.log(value)
     return (
       <Form.Group as={Row} className="mb-3" controlId={id}>
         <Form.Label column>{label}</Form.Label>

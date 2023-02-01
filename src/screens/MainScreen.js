@@ -7,6 +7,7 @@ import useValidate from "../validations/useValidate";
 import calculations from "../calculate.js/calculate";
 import FormDisplay from "../components/FormDisplay";
 import Navigation from "../components/Navigation";
+import FullForm from "../components/FullForm";
 
 export default function MainScreen() {
   const [offTime, setOffTime] = useState(168);
@@ -191,7 +192,6 @@ export default function MainScreen() {
   };
 
   return (
-    
     <div
       className="small-container"
       style={{
@@ -203,120 +203,27 @@ export default function MainScreen() {
       <Navigation />
       <Row style={{ margin: "auto", marginTop: "10px" }}>
         <Col lg={3}>
-          <Form>
-            <FormDisplay
-              type={"numeric"}
-              controlId={"timer"}
-              label={"Off/Timer"}
-              id={"offTime"}
-              errors={errors}
-              value={offTime}
-              suffix={" T"}
-              handleValidation={handleValidation}
-            />
-            <FormDisplay
-              type={"numeric"}
-              controlId={"overtimeOffshoreHours"}
-              label={"Overtid Off"}
-              id={"overtimeOffshoreHours"}
-              errors={errors}
-              suffix={" T"}
-              handleValidation={handleValidation}
-              value={overtimeOffshoreHours}
-            />
-            <FormDisplay
-              type={"numeric"}
-              label={"Off/Tillegg"}
-              controlId={offshorePremium}
-              min={0}
-              id={"offshorePremium"}
-              errors={errors}
-              suffix={" Kr"}
-              value={offshorePremium}
-              handleValidation={handleValidation}
-            />
-            <FormDisplay
-              type={"numeric"}
-              controlId={"travelExpenses"}
-              label={"Reise"}
-              id={"travelExpenses"}
-              errors={errors}
-              value={travelExpenses}
-              suffix={" Kr"}
-              handleValidation={handleValidation}
-            />
-
-            <FormDisplay
-              type={"numeric"}
-              controlId={"lonn"}
-              label={"Timesats"}
-              id={"hourlyRate"}
-              errors={errors}
-              suffix={" Kr"}
-              value={hourlyRate}
-              handleValidation={handleValidation}
-            />
-
-            <FormDisplay
-              type={"numeric"}
-              controlId={"safetyHours"}
-              label={"VO Timer"}
-              id={"safetyRepresentativeHours"}
-              errors={errors}
-              suffix={" T"}
-              value={safetyRepresentativeHours}
-              handleValidation={handleValidation}
-            />
-
-            <FormDisplay
-              type={"numeric"}
-              controlId={"skatt"}
-              label={"Skatt"}
-              id={"taxPercentage"}
-              errors={errors}
-              suffix={" %"}
-              value={taxPercentage}
-              handleValidation={handleValidation}
-            />
-
-            <h4>Fagforening</h4>
-            <div>
-              <FormDisplay
-              label="FF"
-              id={"group1"}
-              type={"radio"}
-              name={"group1"}
-              defaultChecked={true}
-              onChange={(e) => setUnionName("FF")}
-/>
-             
-
-              <FormDisplay
-                onChange={(e) => setUnionName("Safe")}
-                label="Safe"
-                name="group1"
-                type={"radio"}
-                id={"group2"}
-              />
-
-              <FormDisplay
-                onChange={(e) => setUnionName("Parat")}
-                label="Parat"
-                name="group1"
-                type={"radio"}
-                id={"group3"}
-              />
-              <FormDisplay
-                onChange={(e) => setUnionName("UO")}
-                label="UO"
-                name="group1"
-                type={"radio"}
-                id={"group3"}
-              />
-            </div>
-          </Form>
+          <FullForm
+            setUnionName={setUnionName}
+            taxPercentage={taxPercentage}
+            safetyRepresentativeHours={safetyRepresentativeHours}
+            hourlyRate={hourlyRate}
+            travelExpenses={travelExpenses}
+            offshorePremium={offshorePremium}
+            offTime={offTime}
+            overtimeOffshoreHours={overtimeOffshoreHours}
+            handleValidation={handleValidation}
+            errors={errors}
+           
+          />
         </Col>
         <Col lg={4}>
+ {/*   {totalOffshoreHours && reducedAnnualWork !== undefined && (
+  <FullForm 
+    totalOffshoreHours={totalOffshoreHours}
+    reducedAnnualWork={reducedAnnualWork}
+  /> 
+)}  */}
           <Form>
             <FormDisplay
               type={"text"}
@@ -332,7 +239,7 @@ export default function MainScreen() {
               suffix={" T"}
               id={"totalOffshoreHours"}
             />
-          </Form>
+          </Form> 
         </Col>
         <Col md={3}>
           <Form>
