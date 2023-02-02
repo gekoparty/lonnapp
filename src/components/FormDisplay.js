@@ -3,6 +3,7 @@ import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import { NumericFormat } from "react-number-format";
+import PropTypes from "prop-types";
 
 const FormDisplay = ({
   label,
@@ -16,7 +17,6 @@ const FormDisplay = ({
   errors,
   handleValidation,
   suffix,
- 
 }) => {
   if (type === "numeric") {
     return (
@@ -47,7 +47,6 @@ const FormDisplay = ({
       </>
     );
   } else if (type === "text") {
-    console.log(value)
     return (
       <Form.Group as={Row} className="mb-3" controlId={id}>
         <Form.Label column>{label}</Form.Label>
@@ -81,3 +80,16 @@ const FormDisplay = ({
 };
 
 export default FormDisplay;
+
+FormDisplay.propTypes = {
+  label: PropTypes.string,
+  id: PropTypes.string,
+  type: PropTypes.string,
+  value: PropTypes.number,
+  onChange: PropTypes.func,
+  defaultChecked: PropTypes.bool,
+  readOnly: PropTypes.bool,
+  errors: PropTypes.object,
+  handleValidation: PropTypes.func,
+  suffix: PropTypes.string,
+};

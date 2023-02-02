@@ -35,6 +35,7 @@ export default function MainScreen() {
   const [travelExpenses, setTravelExpenses] = useState(0);
   const { errors, isValid, validate } = useValidate(schema);
   const [brutto, setBrutto] = useState(0);
+  const [keyValue, setKeyValue] = useState(Date.now());
 
   const employeeInsuranceCost = -39;
 
@@ -108,6 +109,7 @@ export default function MainScreen() {
   );
 
   const calculateSalary = useCallback(() => {
+    setKeyValue(Date.now());
     setBrutto(calculateBrutto());
     setMonthlySalary(calculateMonthlySalary());
     setReducedAnnualWork(calculateReducedAnnualWorkAmount());
@@ -191,6 +193,10 @@ export default function MainScreen() {
     fields[field].validator({ [field]: newValue });
   };
 
+  const handleRender = () => {
+    setKeyValue(keyValue + 1);
+  };
+
   return (
     <div
       className="small-container"
@@ -202,45 +208,23 @@ export default function MainScreen() {
     >
       <Navigation />
       <Row style={{ margin: "auto", marginTop: "10px" }}>
-        <Col lg={3}>
-          <FullForm
-            setUnionName={setUnionName}
-            taxPercentage={taxPercentage}
-            safetyRepresentativeHours={safetyRepresentativeHours}
-            hourlyRate={hourlyRate}
-            travelExpenses={travelExpenses}
-            offshorePremium={offshorePremium}
-            offTime={offTime}
-            overtimeOffshoreHours={overtimeOffshoreHours}
-            handleValidation={handleValidation}
-            errors={errors}
-           
-          />
-        </Col>
-        <Col lg={4}>
- {/*   {totalOffshoreHours && reducedAnnualWork !== undefined && (
-  <FullForm 
-    totalOffshoreHours={totalOffshoreHours}
-    reducedAnnualWork={reducedAnnualWork}
-  /> 
-)}  */}
-          <Form>
-            <FormDisplay
-              type={"text"}
-              label={"Redusert Årsverk"}
-              value={reducedAnnualWork}
-              suffix={" T"}
-              id={"reducedAnnualWork"}
-            />
-            <FormDisplay
-              type={"text"}
-              label={"Sum Timer"}
-              value={totalOffshoreHours}
-              suffix={" T"}
-              id={"totalOffshoreHours"}
-            />
-          </Form> 
-        </Col>
+        <FullForm
+          key={1}
+          setUnionName={setUnionName}
+          taxPercentage={taxPercentage}
+          safetyRepresentativeHours={safetyRepresentativeHours}
+          hourlyRate={hourlyRate}
+          travelExpenses={travelExpenses}
+          offshorePremium={offshorePremium}
+          offTime={offTime}
+          overtimeOffshoreHours={overtimeOffshoreHours}
+          handleValidation={handleValidation}
+          errors={errors}
+          totalOffshoreHours={totalOffshoreHours}
+          reducedAnnualWork={reducedAnnualWork}
+          handleRender={handleRender}
+        />
+
         <Col md={3}>
           <Form>
             <FormDisplay

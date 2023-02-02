@@ -1,11 +1,15 @@
 import Form from "react-bootstrap/Form";
 import FormDisplay from "./FormDisplay";
+import Col from "react-bootstrap/Col";
+import PropTypes from 'prop-types';
 
 const FullForm = ({ ...props }) => {
   console.log(props);
   return (
-    <div>
-      <Form>
+    <>
+    <Col lg={3}>
+        
+      <Form key={props.key}>
         <FormDisplay
           type={"numeric"}
           controlId={"offtime"}
@@ -117,28 +121,51 @@ const FullForm = ({ ...props }) => {
             type={"radio"}
             id={"group3"}
           />
-        </div>
-      </Form>
-
+          </div>
+          </Form>
+        </Col>
       
-      {/* <Form>
-            <FormDisplay
-              type={"text"}
-              label={"Redusert Årsverk"}
-              value={props.reducedAnnualWork}
-              suffix={" T"}
-              id={"reducedAnnualWork"}
-            />
-            <FormDisplay
-              type={"text"}
-              label={"Sum Timer"}
-              value={props.totalOffshoreHours}
-              suffix={" T"}
-              id={"totalOffshoreHours"}
-            />
-          </Form> */}
-    </div>
+      <Col lg={4}>
+        <Form key={props.key}>
+          <FormDisplay
+            type={"text"}
+            label={"Redusert Årsverk"}
+            value={props.reducedAnnualWork}
+            suffix={" T"}
+            id={"reducedAnnualWork"}
+          />
+
+          <FormDisplay
+            type={"text"}
+            label={"Sum Timer"}
+            value={props.totalOffshoreHours}
+            suffix={" T"}
+            id={"totalOffshoreHours"}
+          />
+        </Form>
+      </Col>
+    
+      </>
   );
+ 
+  
 };
+  
 
 export default FullForm;
+
+FullForm.propTypes = {
+  setUnionName: PropTypes.func,
+  taxPercentage: PropTypes.number,
+  safetyRepresentativeHours: PropTypes.number,
+  hourlyRate: PropTypes.number,
+  travelExpenses: PropTypes.number,
+  offshorePremium: PropTypes.number,
+  offTime: PropTypes.number,
+  overtimeOffshoreHours: PropTypes.number,
+  handleValidation: PropTypes.func,
+  errors: PropTypes.object,
+  totalOffshoreHours: PropTypes.number,
+  reducedAnnualWork: PropTypes.number,
+  handleRender: PropTypes.func
+}
