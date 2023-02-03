@@ -1,63 +1,43 @@
 const calculations = {
-    monthlySalary: (hourlyRate) => 162.5 * hourlyRate,
-    reducedAnnualWorkAmount: (offTime) =>
-    (offTime / 168) * 15.68,
-    reducedAnnualWork: (reducedAnnualWork, hourlyRate) =>
-    
-      -parseFloat((reducedAnnualWork * hourlyRate).toFixed(2)),
-    SRAmount: (safetyRepresentativeHours) => safetyRepresentativeHours * 15,
-    overtimeBaseSalary: (hourlyRate, overtimeOffshoreHours) =>
-      overtimeOffshoreHours * hourlyRate,
-    overtimeExtraPercentage: (overtimeBaseSalary) => overtimeBaseSalary,
-    totalOffshorePremium: (offshorePremium, totalOffshoreHours) =>
-      offshorePremium * totalOffshoreHours,
-    taxWithholding: (brutto, taxPercentage) => -(brutto * taxPercentage) / 100,
-    totalOffshoreHours: (offTime, overtimeOffshoreHours) =>
-      offTime + overtimeOffshoreHours,
-    grossTotal: (brutto) => brutto,
-    unionFees: (brutto, travelExpenses, unionName) => {
-      switch (unionName) {
-        case "FF":
-          return -((brutto - travelExpenses) * 1.5) / 100;
-        case "Safe":
-          return -460;
-        case "Parat":
-          return -520;
-        default:
-          return 0;
-      }
-    },
-    calculateNetSalary: (
-      grossTotal,
-      taxWithholding,
-      clubDeduction,
-      employeeInsuranceCost,
-      unionFees
-    ) => {
-      return (
-        grossTotal +
-        taxWithholding +
-        clubDeduction +
-        employeeInsuranceCost +
-        unionFees
-      );
-    },
-    calculateSalary: (
-      monthlySalary,
-      reducedAnnualWorkAmount,
-      overtimeBaseSalary,
-      overtimeExtraPercentage,
-      totalOffshorePremium,
-      srAmount,
-      travelExpenses
-    ) =>
-      monthlySalary +
-      reducedAnnualWorkAmount +
-      overtimeBaseSalary +
-      overtimeExtraPercentage +
-      totalOffshorePremium +
-      srAmount +
-      travelExpenses,
-  };
+  monthlySalary: (state) => 162.5 * state.hourlyRate,
+  reducedAnnualWorkAmount: (state) => (state.offTime / 168) * 15.68,
+  reducedAnnualWork: (state) =>
+    -parseFloat((state.reducedAnnualWork * state.hourlyRate).toFixed(2)),
+  SRAmount: (state) => state.safetyRepresentativeHours * 15,
+  overtimeBaseSalary: (state) => state.overtimeOffshoreHours * state.hourlyRate,
+  overtimeExtraPercentage: (state) => state.overtimeBaseSalary,
+  totalOffshorePremium: (state) =>
+    state.offshorePremium * state.totalOffshoreHours,
+  taxWithholding: (state) => -(state.brutto * state.taxPercentage) / 100,
+  totalOffshoreHours: (state) => state.offTime + state.overtimeOffshoreHours,
+  grossTotal: (state) => state.brutto,
+  unionFees: (state) => {
+    switch (state.unionName) {
+      case "FF":
+        return -((state.brutto - state.travelExpenses) * 1.5) / 100;
+      case "Safe":
+        return -460;
+      case "Parat":
+        return -520;
+      default:
+        return 0;
+    }
+  },
+  calculateNetSalary: (state) =>
+    state.grossTotal +
+    state.taxWithholding +
+    state.clubDeduction +
+    state.employeeInsuranceCost +
+    state.unionFees, 
 
-  export default calculations;
+  calculateSalary: (state) =>
+    state.monthlySalary +
+    state.reducedAnnualWorkAmount +
+    state.overtimeBaseSalary +
+    state.overtimeExtraPercentage +
+    state.totalOffshorePremium +
+    state.srAmount +
+    state.travelExpenses,
+};
+
+export default calculations;

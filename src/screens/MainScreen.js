@@ -1,59 +1,86 @@
 import React, { useEffect, useState, useCallback } from "react";
 import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Form from "react-bootstrap/Form";
 import schema from "../validations/schema";
 import useValidate from "../validations/useValidate";
 import calculations from "../calculate.js/calculate";
-import FormDisplay from "../components/FormDisplay";
+
 import Navigation from "../components/Navigation";
 import FullForm from "../components/FullForm";
 
 export default function MainScreen() {
-  const [offTime, setOffTime] = useState(168);
+  const [state, setState] = useState({
+    keyValue: Date.now(),
+    offTime: 168,
+    offshorePremium: 84.7,
+    hourlyRate: 231,
+    taxPercentage: 30,
+    monthlySalary: 0,
+    netSalary: 0,
+    reducedAnnualWork: 0,
+    reducedAnnualWorkAmount: 0,
+    taxWithholding: 0,
+    overtimeOffshoreHours: 0,
+    totalOffshoreHours: 0,
+    overtimeBaseSalary: 0,
+    totalOffshorePremium: 0,
+    overtimeExtraPercentage: 0,
+    grossTotal: 0,
+    safetyRepresentativeHours: 0,
+    srAmount: 0,
+    unionFees: 0,
+    unionName: "FF",
+    clubDeduction: 0,
+    travelExpenses: 0,
+    brutto: 0,
+    employeeInsuranceCost: -39,
+    errors: {},
+  });
 
-  const [offshorePremium, setOffshorePremium] = useState(84.7);
-  const [hourlyRate, setHourlyRate] = useState(220);
-  const [taxPercentage, setTaxPercentage] = useState(30);
+  const {
+    offTime,
+    offshorePremium,
+    hourlyRate,
+    taxPercentage,
+    monthlySalary,
+    netSalary,
+    reducedAnnualWork,
+    reducedAnnualWorkAmount,
+    taxWithholding,
+    overtimeOffshoreHours,
+    totalOffshoreHours,
+    overtimeBaseSalary,
+    totalOffshorePremium,
+    overtimeExtraPercentage,
+    grossTotal,
+    safetyRepresentativeHours,
+    srAmount,
+    unionFees,
+    unionName,
+    clubDeduction,
+    travelExpenses,
+    brutto,
+    keyValue,
+    employeeInsuranceCost,
+  } = state;
 
-  const [monthlySalary, setMonthlySalary] = useState(0);
-  const [netSalary, setNetSalary] = useState(0);
-  const [reducedAnnualWork, setReducedAnnualWork] = useState(0);
-  const [reducedAnnualWorkAmount, setReducedAnnualWorkAmount] = useState(0);
-  const [taxWithholding, setTaxWithholding] = useState(0);
-  const [overtimeOffshoreHours, setOvertimeOffshoreHours] = useState(0);
-  const [totalOffshoreHours, setTotalOffshoreHours] = useState(0);
-  const [overtimeBaseSalary, setOvertimeBaseSalary] = useState(0);
-  const [totalOffshorePremium, setTotalOffshorePremium] = useState(0);
-  const [overtimeExtraPercentage, setOvertimeExtraPercentage] = useState(0);
-  const [grossTotal, setGrossTotal] = useState(0);
-  const [safetyRepresentativeHours, setSafetyRepresentativeHours] = useState(0);
-  const [srAmount, setSrAmount] = useState(0);
-  const [unionFees, setUnionFees] = useState(0);
-  const [unionName, setUnionName] = useState("FF");
-  const [clubDeduction, setClubDeduction] = useState(0);
-  const [travelExpenses, setTravelExpenses] = useState(0);
   const { errors, isValid, validate } = useValidate(schema);
-  const [brutto, setBrutto] = useState(0);
-  const [keyValue, setKeyValue] = useState(Date.now());
 
-  const employeeInsuranceCost = -39;
-
-  const useCalculation = (name, ...params) => {
+  const useCalculation = (name) => {
     const calculation = calculations[name];
-    return useCallback(() => calculation(...params), [calculation, ...params]);
+    return useCallback(() => calculation(state), [calculation, state]);
   };
 
   const calculateMonthlySalary = useCalculation("monthlySalary", hourlyRate);
   const calculateReducedAnnualWorkAmount = useCalculation(
-    "reducedAnnualWorkAmount",
-    offTime
-  );
-  const calculateReducedAnnualWork = useCalculation(
     "reducedAnnualWork",
     reducedAnnualWork,
     hourlyRate
   );
+  const calculateReducedAnnualWork = useCalculation(
+    "reducedAnnualWorkAmount",
+    offTime
+  );
+
   const calculateSRAmount = useCalculation(
     "SRAmount",
     safetyRepresentativeHours
@@ -108,21 +135,31 @@ export default function MainScreen() {
     unionFees
   );
 
+  const setUnionName = (newValue) => {
+    setState((prevState) => ({
+      ...prevState,
+      unionName: newValue,
+    }));
+  };
+
   const calculateSalary = useCallback(() => {
-    setKeyValue(Date.now());
-    setBrutto(calculateBrutto());
-    setMonthlySalary(calculateMonthlySalary());
-    setReducedAnnualWork(calculateReducedAnnualWorkAmount());
-    setReducedAnnualWorkAmount(calculateReducedAnnualWork());
-    setSrAmount(calculateSRAmount());
-    setOvertimeBaseSalary(calculateOvertimeBaseSalary());
-    setOvertimeExtraPercentage(calculateOvertimeExtraPercentage());
-    setTotalOffshorePremium(calculateTotalOffshorePremium());
-    setTaxWithholding(calculateTaxWithholding());
-    setTotalOffshoreHours(calculateTotalOffshoreHours());
-    setGrossTotal(calculateGrossTotal());
-    setUnionFees(calculateUnionFees());
-    setNetSalary(calculateNetSalary());
+    setState((prevState) => ({
+      ...prevState,
+
+      monthlySalary: calculateMonthlySalary(),
+      reducedAnnualWork: calculateReducedAnnualWork(),
+      srAmount: calculateSRAmount(),
+      overtimeBaseSalary: calculateOvertimeBaseSalary(),
+      overtimeExtraPercentage: calculateOvertimeExtraPercentage(),
+      totalOffshorePremium: calculateTotalOffshorePremium(),
+      taxWithholding: calculateTaxWithholding(),
+      totalOffshoreHours: calculateTotalOffshoreHours(),
+      grossTotal: calculateGrossTotal(),
+      unionFees: calculateUnionFees(),
+      netSalary: calculateNetSalary(),
+      reducedAnnualWorkAmount: calculateReducedAnnualWorkAmount(),
+      brutto: calculateBrutto(),
+    }));
   }, [
     calculateBrutto,
     calculateGrossTotal,
@@ -144,58 +181,89 @@ export default function MainScreen() {
   useEffect(() => {
     calculateSalary();
   }, [
-    calculateSalary,
-    isValid,
-    grossTotal,
-    srAmount,
-    totalOffshorePremium,
-    safetyRepresentativeHours,
-    monthlySalary,
-    hourlyRate,
-    offshorePremium,
+    netSalary,
     offTime,
+    offshorePremium,
+    hourlyRate,
     taxPercentage,
+    monthlySalary,
     reducedAnnualWork,
     reducedAnnualWorkAmount,
     taxWithholding,
     overtimeOffshoreHours,
-    overtimeBaseSalary,
-    overtimeExtraPercentage,
     totalOffshoreHours,
+    overtimeBaseSalary,
+    totalOffshorePremium,
+    overtimeExtraPercentage,
+    grossTotal,
+    safetyRepresentativeHours,
+    srAmount,
     unionFees,
-    employeeInsuranceCost,
-    clubDeduction,
     unionName,
+    clubDeduction,
     travelExpenses,
+    brutto,
+    errors,
+    keyValue,
+    unionName,
   ]);
 
   /* Validations */
 
   const fields = {
-    offTime: { setter: setOffTime, validator: validate },
-    hourlyRate: { setter: setHourlyRate, validator: validate },
-    taxPercentage: { setter: setTaxPercentage, validator: validate },
-    overtimeOffshoreHours: {
-      setter: setOvertimeOffshoreHours,
+    offTime: {
+      setter: (value) => setState((state) => ({ ...state, offTime: value })),
       validator: validate,
     },
-    offshorePremium: { setter: setOffshorePremium, validator: validate },
-    travelExpenses: { setter: setTravelExpenses, validator: validate },
+    hourlyRate: {
+      setter: (value) => setState((state) => ({ ...state, hourlyRate: value })),
+      validator: validate,
+    },
+    taxPercentage: {
+      setter: (value) =>
+        setState((state) => ({ ...state, taxPercentage: value })),
+      validator: validate,
+    },
+    overtimeOffshoreHours: {
+      setter: (value) =>
+        setState((state) => ({ ...state, overtimeOffshoreHours: value })),
+      validator: validate,
+    },
+    offshorePremium: {
+      setter: (value) =>
+        setState((state) => ({ ...state, offshorePremium: value })),
+      validator: validate,
+    },
+    travelExpenses: {
+      setter: (value) =>
+        setState((state) => ({ ...state, travelExpenses: value })),
+      validator: validate,
+    },
     safetyRepresentativeHours: {
-      setter: setSafetyRepresentativeHours,
+      setter: (value) =>
+        setState((state) => ({ ...state, safetyRepresentativeHours: value })),
+      validator: validate,
+    },
+    netSalary: {
+      setter: (value) => setState((state) => ({ ...state, netSalary: value })),
       validator: validate,
     },
   };
 
   const handleValidation = (field, value) => {
     const newValue = value || 0; // check if value is falsy, if so set to 0
-    fields[field].setter(newValue);
+    setState((prevState) => ({
+      ...prevState,
+      [field]: newValue,
+    }));
     fields[field].validator({ [field]: newValue });
   };
 
-  const handleRender = () => {
+  /* const handleRender = () => {
     setKeyValue(keyValue + 1);
-  };
+  }; */
+
+  
 
   return (
     <div
@@ -209,149 +277,11 @@ export default function MainScreen() {
       <Navigation />
       <Row style={{ margin: "auto", marginTop: "10px" }}>
         <FullForm
-          key={1}
-          setUnionName={setUnionName}
-          taxPercentage={taxPercentage}
-          safetyRepresentativeHours={safetyRepresentativeHours}
-          hourlyRate={hourlyRate}
-          travelExpenses={travelExpenses}
-          offshorePremium={offshorePremium}
-          offTime={offTime}
-          overtimeOffshoreHours={overtimeOffshoreHours}
+          formData={state}
           handleValidation={handleValidation}
           errors={errors}
-          totalOffshoreHours={totalOffshoreHours}
-          reducedAnnualWork={reducedAnnualWork}
-          handleRender={handleRender}
+          setUnionName={setUnionName}
         />
-
-        <Col md={3}>
-          <Form>
-            <FormDisplay
-              type={"text"}
-              value={monthlySalary}
-              suffix={" Kr"}
-              label={"Månedslønn"}
-              id={"monthlySalary"}
-            />
-            {travelExpenses > 0 ? (
-              <FormDisplay
-                type={"text"}
-                value={travelExpenses}
-                suffix={" Kr"}
-                label={"ReiseOpp"}
-                id={"travelExpenses"}
-              />
-            ) : (
-              ""
-            )}
-
-            {offTime > 0 ? (
-              <FormDisplay
-                type={"text"}
-                value={reducedAnnualWorkAmount}
-                suffix={" Kr"}
-                label={"Beløp Red/Verk"}
-                id={"reducedAnnualWorkAmount"}
-              />
-            ) : (
-              ""
-            )}
-            {overtimeBaseSalary > 0 && (
-              <FormDisplay
-                value={overtimeBaseSalary}
-                type={"text"}
-                suffix={" Kr"}
-                label={"Overtid Grunnlønn"}
-                id={"overtimeBaseSalary"}
-              />
-            )}
-            {overtimeExtraPercentage > 0 && (
-              <FormDisplay
-                value={overtimeExtraPercentage}
-                label={"Overtid 100%"}
-                type={"text"}
-                suffix={" Kr"}
-                decimalScale={2}
-                id={"overtidEkstra100"}
-              />
-            )}
-            {offTime > 0 ? (
-              <FormDisplay
-                value={totalOffshorePremium}
-                label={"Off/Tillegg"}
-                type={"text"}
-                suffix={" Kr"}
-                id={"offshoreTillegg"}
-              />
-            ) : (
-              ""
-            )}
-            {srAmount > 0 ? (
-              <FormDisplay
-                value={srAmount}
-                label={"Verneombud"}
-                type={"text"}
-                suffix={" Kr"}
-                id={"srAmount"}
-              />
-            ) : (
-              ""
-            )}
-            <hr />
-            <FormDisplay
-              value={grossTotal}
-              label={"Brutto"}
-              type={"text"}
-              suffix={" Kr"}
-              id={"grossTotal"}
-            />
-            {unionFees !== 0 ? (
-              <FormDisplay
-                value={unionFees}
-                label={"Fagforening"}
-                type={"text"}
-                suffix={" Kr"}
-              />
-            ) : (
-              ""
-            )}
-            <FormDisplay
-              value={employeeInsuranceCost}
-              label={"Egenandel Fors"}
-              type={"text"}
-              suffix={" Kr"}
-              id={"emplyeeInsuranceCos"}
-            />
-            {clubDeduction !== 0 ? (
-              <FormDisplay
-                value={clubDeduction}
-                label={"Klubbtrekk"}
-                type={"text"}
-                suffix={" Kr"}
-                id={"clubDeduction"}
-              />
-            ) : (
-              ""
-            )}
-            <hr />
-            <FormDisplay
-              value={taxWithholding}
-              type={"text"}
-              label={"Skattetrekk"}
-              suffix={" Kr"}
-              id={"taxWithholding"}
-            />
-            <hr />
-            <FormDisplay
-              value={netSalary}
-              type={"text"}
-              label={"Netto Utbetalt"}
-              suffix={" Kr"}
-              id={"netSalary"}
-            />
-          </Form>
-        </Col>
       </Row>
     </div>
   );
