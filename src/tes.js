@@ -1,3 +1,3 @@
 console.log ("Test");
 console.log("another test")
-console.log("Goodbye brother!");
+console.log("Goodbye !");
