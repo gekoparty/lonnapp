@@ -1,8 +1,15 @@
 const calculations = {
   monthlySalary: (state) => 162.5 * state.hourlyRate,
-  reducedAnnualWorkAmount: (state) => (state.offTime / 168) * 15.68,
+
+  // Only deduct annual work if position is not 'leder'
+  reducedAnnualWorkAmount: (state) =>
+    state.position !== "leder" ? (state.offTime / 168) * 15.68 : 0,
+
   reducedAnnualWork: (state) =>
-    -parseFloat((state.reducedAnnualWork * state.hourlyRate).toFixed(2)),
+    state.position !== "leder"
+      ? -parseFloat((state.reducedAnnualWork * state.hourlyRate).toFixed(2))
+      : 0,
+
   SRAmount: (state) => state.safetyRepresentativeHours * 15,
   overtimeBaseSalary: (state) => state.overtimeOffshoreHours * state.hourlyRate,
   overtimeExtraPercentage: (state) => state.overtimeBaseSalary,
@@ -28,8 +35,7 @@ const calculations = {
     state.taxWithholding +
     state.clubDeduction +
     state.employeeInsuranceCost +
-    state.unionFees, 
-
+    state.unionFees,
   calculateSalary: (state) =>
     state.monthlySalary +
     state.reducedAnnualWorkAmount +
@@ -41,3 +47,4 @@ const calculations = {
 };
 
 export default calculations;
+

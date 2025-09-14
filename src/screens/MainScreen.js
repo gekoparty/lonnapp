@@ -11,8 +11,8 @@ export default function MainScreen() {
   const [state, setState] = useState({
     keyValue: Date.now(),
     offTime: 168,
-    offshorePremium: 84.7,
-    hourlyRate: 231,
+    offshorePremium: 105.39,
+    hourlyRate: 291.91,
     taxPercentage: 30,
     monthlySalary: 0,
     netSalary: 0,
@@ -32,6 +32,7 @@ export default function MainScreen() {
     clubDeduction: 0,
     travelExpenses: 0,
     brutto: 0,
+    position: "operatør",   // 👈 added this
     employeeInsuranceCost: -39,
     errors: {},
   });
@@ -61,7 +62,15 @@ export default function MainScreen() {
     brutto,
     keyValue,
     employeeInsuranceCost,
+    position,   // 👈 add this here too
   } = state;
+
+  const setPosition = (newValue) => {
+    setState((prev) => ({
+      ...prev,
+      position: newValue,
+    }));
+  };
 
   const { errors, isValid, validate } = useValidate(schema);
 
@@ -206,6 +215,7 @@ export default function MainScreen() {
     errors,
     keyValue,
     unionName,
+    position,   // 👈 Add this!
   ]);
 
   /* Validations */
@@ -281,6 +291,7 @@ export default function MainScreen() {
           handleValidation={handleValidation}
           errors={errors}
           setUnionName={setUnionName}
+          setPosition={setPosition}   // 👈 added
         />
       </Row>
     </div>
