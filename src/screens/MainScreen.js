@@ -1,4 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
+import Container from "react-bootstrap/Container";
+import Card from "react-bootstrap/Card";
 import Row from "react-bootstrap/Row";
 import schema from "../validations/schema";
 import useValidate from "../validations/useValidate";
@@ -13,7 +15,7 @@ export default function MainScreen() {
     offTime: 168,
     offshorePremium: 105.39,
     hourlyRate: 291.91,
-    taxPercentage: 30,
+    taxPercentage: 29,
     monthlySalary: 0,
     netSalary: 0,
     reducedAnnualWork: 0,
@@ -32,7 +34,11 @@ export default function MainScreen() {
     clubDeduction: 0,
     travelExpenses: 0,
     brutto: 0,
-    position: "operatør",   // 👈 added this
+    øvelseHours: 0,
+    offshoreDays: 0,
+    taxableBenefits: 0,
+    øvelseAmount: 0,
+    position: "operatør",
     employeeInsuranceCost: -39,
     errors: {},
   });
@@ -62,238 +68,180 @@ export default function MainScreen() {
     brutto,
     keyValue,
     employeeInsuranceCost,
-    position,   // 👈 add this here too
+    øvelseHours,
+    offshoreDays,
+    position,
   } = state;
-
-  const setPosition = (newValue) => {
-    setState((prev) => ({
-      ...prev,
-      position: newValue,
-    }));
-  };
 
   const { errors, isValid, validate } = useValidate(schema);
 
-  const useCalculation = (name) => {
-    const calculation = calculations[name];
-    return useCallback(() => calculation(state), [calculation, state]);
-  };
+  const setUnionName = (newValue) =>
+    setState((prev) => ({ ...prev, unionName: newValue }));
 
-  const calculateMonthlySalary = useCalculation("monthlySalary", hourlyRate);
-  const calculateReducedAnnualWorkAmount = useCalculation(
-    "reducedAnnualWork",
-    reducedAnnualWork,
-    hourlyRate
-  );
-  const calculateReducedAnnualWork = useCalculation(
-    "reducedAnnualWorkAmount",
-    offTime
-  );
+  const setPosition = (newValue) =>
+    setState((prev) => ({ ...prev, position: newValue }));
 
-  const calculateSRAmount = useCalculation(
-    "SRAmount",
-    safetyRepresentativeHours
-  );
-  const calculateOvertimeBaseSalary = useCalculation(
-    "overtimeBaseSalary",
-    hourlyRate,
-    overtimeOffshoreHours
-  );
-  const calculateOvertimeExtraPercentage = useCalculation(
-    "overtimeExtraPercentage",
-    overtimeBaseSalary
-  );
-  const calculateTotalOffshorePremium = useCalculation(
-    "totalOffshorePremium",
-    offshorePremium,
-    totalOffshoreHours
-  );
-  const calculateTaxWithholding = useCalculation(
-    "taxWithholding",
-    brutto,
-    taxPercentage
-  );
-  const calculateTotalOffshoreHours = useCalculation(
-    "totalOffshoreHours",
-    offTime,
-    overtimeOffshoreHours
-  );
-  const calculateGrossTotal = useCalculation("grossTotal", brutto);
-  const calculateUnionFees = useCalculation(
-    "unionFees",
-    brutto,
-    travelExpenses,
-    unionName
-  );
-  const calculateBrutto = useCalculation(
-    "calculateSalary",
-    monthlySalary,
-    reducedAnnualWorkAmount,
-    overtimeBaseSalary,
-    overtimeExtraPercentage,
-    totalOffshorePremium,
-    srAmount,
-    travelExpenses
-  );
-  const calculateNetSalary = useCalculation(
-    "calculateNetSalary",
-    grossTotal,
-    taxWithholding,
-    clubDeduction,
-    employeeInsuranceCost,
-    unionFees
-  );
+  // Single calculate function that computes derived values in safe order
+  const calculateAll = useCallback(() => {
+    setState((prev) => {
+      const s = { ...prev }; // snapshot
 
-  const setUnionName = (newValue) => {
-    setState((prevState) => ({
-      ...prevState,
-      unionName: newValue,
-    }));
-  };
+      // compute components using calculation helpers (safe numeric inside calculations)
+      const monthlySalary = calculations.monthlySalary(s);
+      const reducedAnnualWorkAmount = calculations.reducedAnnualWorkAmount(s);
+      const reducedAnnualWork = calculations.reducedAnnualWork(s);
+      const srAmount = calculations.SRAmount(s);
+      const overtimeBaseSalary = calculations.overtimeBaseSalary(s);
+      const overtimeExtraPercentage = calculations.overtimeExtraPercentage(s);
+      const totalOffshoreHours = calculations.totalOffshoreHours(s);
+      const totalOffshorePremium = calculations.totalOffshorePremium(s);
+      const ovelseAmount = calculations.øvelseAmount(s);
+      const taxableBenefits = calculations.taxableBenefits(s);
 
-  const calculateSalary = useCallback(() => {
-    setState((prevState) => ({
-      ...prevState,
+      // build a temp state for brutto calculation (include just-calculated parts)
+      const temp = {
+        ...s,
+        monthlySalary,
+        reducedAnnualWorkAmount,
+        reducedAnnualWork,
+        srAmount,
+        overtimeBaseSalary,
+        overtimeExtraPercentage,
+        totalOffshoreHours,
+        totalOffshorePremium,
+        øvelseAmount: ovelseAmount,
+        taxableBenefits,
+      };
 
-      monthlySalary: calculateMonthlySalary(),
-      reducedAnnualWork: calculateReducedAnnualWork(),
-      srAmount: calculateSRAmount(),
-      overtimeBaseSalary: calculateOvertimeBaseSalary(),
-      overtimeExtraPercentage: calculateOvertimeExtraPercentage(),
-      totalOffshorePremium: calculateTotalOffshorePremium(),
-      taxWithholding: calculateTaxWithholding(),
-      totalOffshoreHours: calculateTotalOffshoreHours(),
-      grossTotal: calculateGrossTotal(),
-      unionFees: calculateUnionFees(),
-      netSalary: calculateNetSalary(),
-      reducedAnnualWorkAmount: calculateReducedAnnualWorkAmount(),
-      brutto: calculateBrutto(),
-    }));
-  }, [
-    calculateBrutto,
-    calculateGrossTotal,
-    calculateMonthlySalary,
-    calculateNetSalary,
-    calculateOvertimeBaseSalary,
-    calculateOvertimeExtraPercentage,
-    calculateSRAmount,
-    calculateReducedAnnualWork,
-    calculateReducedAnnualWorkAmount,
-    calculateTaxWithholding,
-    calculateTotalOffshoreHours,
-    calculateTotalOffshorePremium,
-    calculateUnionFees,
-  ]);
+      // compute brutto (salary total)
+      const brutto = calculations.calculateSalary(temp);
 
-  //check unionName
+      // compute tax and other final values using the up-to-date brutto
+      const taxWithholding = calculations.taxWithholding({ ...temp, brutto });
+      const unionFees = calculations.unionFees({ ...temp, brutto });
+      const grossTotal = calculations.grossTotal({ ...temp, brutto });
+      const netSalary = calculations.calculateNetSalary({
+        ...temp,
+        brutto,
+        taxWithholding,
+        unionFees,
+        grossTotal,
+      });
 
+      return {
+        ...s,
+        monthlySalary,
+        reducedAnnualWorkAmount,
+        reducedAnnualWork,
+        srAmount,
+        overtimeBaseSalary,
+        overtimeExtraPercentage,
+        totalOffshoreHours,
+        totalOffshorePremium,
+        øvelseAmount: ovelseAmount,
+        taxableBenefits,
+        brutto,
+        grossTotal,
+        taxWithholding,
+        unionFees,
+        netSalary,
+      };
+    });
+  }, []);
+
+  // Recalculate when any input field that affects salary changes.
   useEffect(() => {
-    calculateSalary();
+    calculateAll();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    netSalary,
     offTime,
     offshorePremium,
     hourlyRate,
     taxPercentage,
-    monthlySalary,
-    reducedAnnualWork,
-    reducedAnnualWorkAmount,
-    taxWithholding,
     overtimeOffshoreHours,
-    totalOffshoreHours,
-    overtimeBaseSalary,
-    totalOffshorePremium,
-    overtimeExtraPercentage,
-    grossTotal,
+    travelExpenses,
     safetyRepresentativeHours,
-    srAmount,
-    unionFees,
     unionName,
     clubDeduction,
-    travelExpenses,
-    brutto,
-    errors,
+    employeeInsuranceCost,
+    øvelseHours,
+    offshoreDays,
+    position,
     keyValue,
-    unionName,
-    position,   // 👈 Add this!
   ]);
 
-  /* Validations */
-
+  // Fields for validation handlers (add offshoreDays & øvelseHours here)
   const fields = {
     offTime: {
-      setter: (value) => setState((state) => ({ ...state, offTime: value })),
+      setter: (value) => setState((s) => ({ ...s, offTime: value })),
       validator: validate,
     },
     hourlyRate: {
-      setter: (value) => setState((state) => ({ ...state, hourlyRate: value })),
+      setter: (value) => setState((s) => ({ ...s, hourlyRate: value })),
       validator: validate,
     },
     taxPercentage: {
-      setter: (value) =>
-        setState((state) => ({ ...state, taxPercentage: value })),
+      setter: (value) => setState((s) => ({ ...s, taxPercentage: value })),
       validator: validate,
     },
     overtimeOffshoreHours: {
-      setter: (value) =>
-        setState((state) => ({ ...state, overtimeOffshoreHours: value })),
+      setter: (value) => setState((s) => ({ ...s, overtimeOffshoreHours: value })),
       validator: validate,
     },
     offshorePremium: {
-      setter: (value) =>
-        setState((state) => ({ ...state, offshorePremium: value })),
+      setter: (value) => setState((s) => ({ ...s, offshorePremium: value })),
       validator: validate,
     },
     travelExpenses: {
-      setter: (value) =>
-        setState((state) => ({ ...state, travelExpenses: value })),
+      setter: (value) => setState((s) => ({ ...s, travelExpenses: value })),
       validator: validate,
     },
     safetyRepresentativeHours: {
-      setter: (value) =>
-        setState((state) => ({ ...state, safetyRepresentativeHours: value })),
+      setter: (value) => setState((s) => ({ ...s, safetyRepresentativeHours: value })),
       validator: validate,
     },
-    netSalary: {
-      setter: (value) => setState((state) => ({ ...state, netSalary: value })),
+    øvelseHours: {
+      setter: (value) => setState((s) => ({ ...s, øvelseHours: value })),
+      validator: validate,
+    },
+    offshoreDays: {
+      setter: (value) => setState((s) => ({ ...s, offshoreDays: value })),
       validator: validate,
     },
   };
 
   const handleValidation = (field, value) => {
-    const newValue = value || 0; // check if value is falsy, if so set to 0
-    setState((prevState) => ({
-      ...prevState,
-      [field]: newValue,
-    }));
-    fields[field].validator({ [field]: newValue });
+    // ensure numeric fields are numbers; store 0 for falsy
+    const newValue = value === "" || value === null || typeof value === "undefined" ? 0 : value;
+    setState((prev) => ({ ...prev, [field]: newValue }));
+    if (fields[field]) fields[field].validator({ [field]: newValue });
   };
 
-  /* const handleRender = () => {
-    setKeyValue(keyValue + 1);
-  }; */
-
-  
-
   return (
-    <div
-      className="small-container"
-      style={{
-        marginTop: "10px",
-        border: "solid 2px",
-        backgroundColor: "#E0E0E0",
-      }}
-    >
+    <>
       <Navigation />
-      <Row style={{ margin: "auto", marginTop: "10px" }}>
-        <FullForm
-          formData={state}
-          handleValidation={handleValidation}
-          errors={errors}
-          setUnionName={setUnionName}
-          setPosition={setPosition}   // 👈 added
-        />
-      </Row>
-    </div>
+      <Container
+        fluid="md"
+        className="d-flex justify-content-center"
+        style={{ marginTop: "20px", marginBottom: "40px" }}
+      >
+        <Card className="shadow-lg p-4 w-100" style={{ maxWidth: "1200px", backgroundColor: "#F8F9FA" }}>
+          <Card.Header as="h4" className="text-center bg-dark text-white rounded">
+            Lønnskalkulator
+          </Card.Header>
+          <Card.Body>
+            <Row>
+              <FullForm
+                formData={state}
+                handleValidation={handleValidation}
+                errors={errors}
+                setUnionName={setUnionName}
+                setPosition={setPosition}
+              />
+            </Row>
+          </Card.Body>
+        </Card>
+      </Container>
+    </>
   );
 }

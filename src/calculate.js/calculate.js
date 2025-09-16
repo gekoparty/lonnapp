@@ -1,23 +1,46 @@
+const isEligibleForReducedWork = (position) => position === "operatør";
+
 const calculations = {
   monthlySalary: (state) => 162.5 * state.hourlyRate,
 
-  // Only deduct annual work if position is not 'leder'
-  reducedAnnualWorkAmount: (state) =>
-    state.position !== "leder" ? (state.offTime / 168) * 15.68 : 0,
-
+  // === REDUCED ANNUAL WORK ===
   reducedAnnualWork: (state) =>
-    state.position !== "leder"
-      ? -parseFloat((state.reducedAnnualWork * state.hourlyRate).toFixed(2))
+    isEligibleForReducedWork(state.position)
+      ? (state.offTime / 168) * 15.68
       : 0,
 
+  reducedAnnualWorkAmount: (state) =>
+    isEligibleForReducedWork(state.position)
+      ? -((state.offTime / 168) * 15.68) * state.hourlyRate
+      : 0,
+
+  // === OTHER EARNINGS ===
   SRAmount: (state) => state.safetyRepresentativeHours * 15,
+
   overtimeBaseSalary: (state) => state.overtimeOffshoreHours * state.hourlyRate,
   overtimeExtraPercentage: (state) => state.overtimeBaseSalary,
+
+  totalOffshoreHours: (state) =>
+    state.offTime + state.overtimeOffshoreHours,
+
   totalOffshorePremium: (state) =>
     state.offshorePremium * state.totalOffshoreHours,
-  taxWithholding: (state) => -(state.brutto * state.taxPercentage) / 100,
-  totalOffshoreHours: (state) => state.offTime + state.overtimeOffshoreHours,
+
+  øvelseAmount: (state) =>
+    state.øvelseHours * (state.hourlyRate + state.offshorePremium),
+
+  taxableBenefits: (state) =>
+    state.offshoreDays * (state.taxableBenefitRate || 10.44),
+
+  // === SALARY SUMS ===
   grossTotal: (state) => state.brutto,
+
+  skattegrunnlag: (state) =>
+    state.brutto + calculations.taxableBenefits(state),
+
+  taxWithholding: (state) =>
+    -(calculations.skattegrunnlag(state) * state.taxPercentage) / 100,
+
   unionFees: (state) => {
     switch (state.unionName) {
       case "FF":
@@ -26,25 +49,31 @@ const calculations = {
         return -460;
       case "Parat":
         return -520;
+      case "Lederne":
+        return -735;
       default:
         return 0;
     }
   },
+
+  calculateSalary: (state) =>
+    calculations.monthlySalary(state) +
+    calculations.reducedAnnualWorkAmount(state) +
+    calculations.overtimeBaseSalary(state) +
+    calculations.overtimeExtraPercentage(state) +
+    calculations.totalOffshorePremium(state) +
+    calculations.SRAmount(state) +
+    state.travelExpenses +
+    calculations.øvelseAmount(state),
+
   calculateNetSalary: (state) =>
-    state.grossTotal +
-    state.taxWithholding +
+    calculations.calculateSalary(state) +
+    calculations.taxWithholding(state) +
     state.clubDeduction +
     state.employeeInsuranceCost +
-    state.unionFees,
-  calculateSalary: (state) =>
-    state.monthlySalary +
-    state.reducedAnnualWorkAmount +
-    state.overtimeBaseSalary +
-    state.overtimeExtraPercentage +
-    state.totalOffshorePremium +
-    state.srAmount +
-    state.travelExpenses,
+    calculations.unionFees(state),
 };
 
 export default calculations;
+
 
