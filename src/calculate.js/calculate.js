@@ -15,7 +15,7 @@ const calculations = {
       : 0,
 
   // === OTHER EARNINGS ===
-  SRAmount: (state) => state.safetyRepresentativeHours * 15,
+  SRAmount: (state) => state.safetyRepresentativeHours * 14,
 
   overtimeBaseSalary: (state) => state.overtimeOffshoreHours * state.hourlyRate,
   overtimeExtraPercentage: (state) => state.overtimeBaseSalary,
