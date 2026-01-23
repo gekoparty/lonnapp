@@ -36,3 +36,26 @@
     transform: rotate(360deg);
   }
 }
+
+/* ================================
+   Custom UI polish (Salary app)
+   ================================ */
+
+/* Sticky results on desktop only */
+@media (min-width: 992px) {
+  .position-lg-sticky {
+    position: -webkit-sticky; /* iOS Safari 7+ */
+    position: sticky;
+    top: 16px;
+  }
+}
+
+/* Softer, more modern inputs */
+.form-control {
+  border-radius: 0.75rem;
+}
+
+/* Softer cards */
+.card {
+  border-radius: 1rem;
+}
