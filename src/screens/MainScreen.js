@@ -48,24 +48,11 @@ export default function MainScreen() {
     offshorePremium,
     hourlyRate,
     taxPercentage,
-    monthlySalary,
-    netSalary,
-    reducedAnnualWork,
-    reducedAnnualWorkAmount,
-    taxWithholding,
     overtimeOffshoreHours,
-    totalOffshoreHours,
-    overtimeBaseSalary,
-    totalOffshorePremium,
-    overtimeExtraPercentage,
-    grossTotal,
     safetyRepresentativeHours,
-    srAmount,
-    unionFees,
     unionName,
     clubDeduction,
     travelExpenses,
-    brutto,
     keyValue,
     employeeInsuranceCost,
     øvelseHours,
@@ -73,7 +60,7 @@ export default function MainScreen() {
     position,
   } = state;
 
-  const { errors, isValid, validate } = useValidate(schema);
+  const { errors, validate } = useValidate(schema);
 
   const setUnionName = (newValue) =>
     setState((prev) => ({ ...prev, unionName: newValue }));
@@ -185,7 +172,8 @@ export default function MainScreen() {
       validator: validate,
     },
     overtimeOffshoreHours: {
-      setter: (value) => setState((s) => ({ ...s, overtimeOffshoreHours: value })),
+      setter: (value) =>
+        setState((s) => ({ ...s, overtimeOffshoreHours: value })),
       validator: validate,
     },
     offshorePremium: {
@@ -197,7 +185,8 @@ export default function MainScreen() {
       validator: validate,
     },
     safetyRepresentativeHours: {
-      setter: (value) => setState((s) => ({ ...s, safetyRepresentativeHours: value })),
+      setter: (value) =>
+        setState((s) => ({ ...s, safetyRepresentativeHours: value })),
       validator: validate,
     },
     øvelseHours: {
@@ -212,7 +201,10 @@ export default function MainScreen() {
 
   const handleValidation = (field, value) => {
     // ensure numeric fields are numbers; store 0 for falsy
-    const newValue = value === "" || value === null || typeof value === "undefined" ? 0 : value;
+    const newValue =
+      value === "" || value === null || typeof value === "undefined"
+        ? 0
+        : value;
     setState((prev) => ({ ...prev, [field]: newValue }));
     if (fields[field]) fields[field].validator({ [field]: newValue });
   };
@@ -225,8 +217,14 @@ export default function MainScreen() {
         className="d-flex justify-content-center"
         style={{ marginTop: "20px", marginBottom: "40px" }}
       >
-        <Card className="shadow-lg p-4 w-100" style={{ maxWidth: "1200px", backgroundColor: "#F8F9FA" }}>
-          <Card.Header as="h4" className="text-center bg-dark text-white rounded">
+        <Card
+          className="shadow-lg p-4 w-100"
+          style={{ maxWidth: "1200px" }}
+        >
+          <Card.Header
+            as="h4"
+            className="text-center bg-dark text-white rounded"
+          >
             Lønnskalkulator
           </Card.Header>
           <Card.Body>

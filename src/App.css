@@ -1,61 +1,93 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 /* ================================
-   Custom UI polish (Salary app)
+   Custom UI theme (Salary app)
    ================================ */
+
+:root {
+  --bg-page: #f5f7fb;
+  --bg-card: #ffffff;
+  --border-soft: #e5e9f2;
+
+  --primary: #2563eb;
+  --primary-soft: #eef2ff;
+
+  --success: #16a34a;
+  --success-soft: #ecfdf5;
+
+  --danger: #dc2626;
+  --danger-soft: #fef2f2;
+
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+}
+
+body {
+  background-color: var(--bg-page);
+  color: var(--text-main);
+}
 
 /* Sticky results on desktop only */
 @media (min-width: 992px) {
   .position-lg-sticky {
-    position: -webkit-sticky; /* iOS Safari 7+ */
+    position: -webkit-sticky;
     position: sticky;
     top: 16px;
   }
 }
 
-/* Softer, more modern inputs */
+/* Bootstrap components – themed */
+.card {
+  background-color: var(--bg-card);
+  border-radius: 1rem;
+  border: 1px solid var(--border-soft);
+}
+
 .form-control {
+  border-radius: 0.75rem;
+  border: 1px solid var(--border-soft);
+}
+
+.input-group-text {
+  background-color: #f1f5f9;
+  color: var(--text-muted);
   border-radius: 0.75rem;
 }
 
-/* Softer cards */
-.card {
-  border-radius: 1rem;
+/* Accordion styling */
+.accordion-button {
+  background-color: var(--primary-soft);
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.accordion-button:not(.collapsed) {
+  background-color: var(--primary);
+  color: white;
+}
+
+.accordion-body {
+  background-color: #fafbff;
+}
+
+/* Custom utility blocks */
+.netto-box {
+  background-color: var(--success-soft);
+  border: 1px solid #bbf7d0;
+  color: var(--success);
+}
+
+.result-divider {
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--border-soft), transparent);
+  margin: 1rem 0;
+}
+
+.navbar {
+  background: linear-gradient(90deg, #0f172a, #1e293b);
+}
+
+.badge-soft {
+  background: var(--primary-soft);
+  color: var(--primary);
+  border: 1px solid var(--border-soft);
+  font-weight: 600;
 }

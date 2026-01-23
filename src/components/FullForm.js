@@ -46,7 +46,7 @@ const FullForm = ({ formData, handleValidation, errors, setUnionName }) => {
       <Row className="g-3 align-items-stretch mb-3">
         <Col xs={12} lg={8}>
           <Card className="shadow-sm border-0 h-100">
-            <Card.Body className="py-3">
+            <Card.Body className="py-3 netto-box">
               <Row className="g-3">
                 <Col xs={12} md={6}>
                   <Form.Label className="fw-semibold mb-1">Stilling</Form.Label>
@@ -142,7 +142,7 @@ const FullForm = ({ formData, handleValidation, errors, setUnionName }) => {
         {/* Inputs */}
         <Col xs={12} lg={7}>
           <Card className="shadow-sm border-0">
-            <Card.Header className="bg-white border-0 pb-0">
+            <Card.Header className="border-0 pb-0">
               <h6 className="mb-0">Inndata</h6>
               <div className="text-muted small">Fyll inn det som gjelder for perioden.</div>
             </Card.Header>
@@ -284,9 +284,9 @@ const FullForm = ({ formData, handleValidation, errors, setUnionName }) => {
 
         {/* Results (sticky on desktop) */}
         <Col xs={12} lg={5}>
-          <div className="position-lg-sticky" style={{ top: 16 }}>
+          <div className="position-lg-sticky">
             <Card className="shadow-sm border-0">
-              <Card.Header className="bg-white border-0 pb-0">
+              <Card.Header className="border-0 pb-0">
                 <h6 className="mb-0">Resultat</h6>
                 <div className="text-muted small">Beregnet basert på inndata.</div>
               </Card.Header>
@@ -341,7 +341,7 @@ const FullForm = ({ formData, handleValidation, errors, setUnionName }) => {
                     <FormDisplay type="text" value={taxableBenefits} suffix=" Kr" label="Skattepliktig gode" id="taxableBenefits" />
                   )}
 
-                  <hr />
+                  <div className="result-divider" />
 
                   <FormDisplay type="text" value={grossTotal} label="Brutto" suffix=" Kr" id="grossTotal" />
 
@@ -355,13 +355,13 @@ const FullForm = ({ formData, handleValidation, errors, setUnionName }) => {
                     <FormDisplay type="text" value={clubDeduction} label="Klubbtrekk" suffix=" Kr" id="clubDeduction" />
                   )}
 
-                  <hr />
+                 <div className="result-divider" />
 
                   <FormDisplay type="text" value={taxWithholding} label="Skattetrekk" suffix=" Kr" id="taxWithholding" />
 
-                  <hr />
+                  <div className="result-divider" />
 
-                  <div className="p-3 rounded-3 bg-light">
+                  <div className="p-3 rounded-3 netto-box">
                     <div className="text-muted small">Netto utbetalt</div>
                     <div className="h3 fw-bold mb-0">
                       <FormDisplay type="text" value={netSalary} label={null} suffix=" Kr" id="netSalary" compact />
