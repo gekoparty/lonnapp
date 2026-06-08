@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import Row from "react-bootstrap/Row";
 import schema from "../validations/schema";
 import useValidate from "../validations/useValidate";
@@ -6,163 +6,143 @@ import useValidate from "../validations/useValidate";
 import Navigation from "../components/Navigation";
 import FullForm from "../components/FullForm";
 
+const initialFormState = {
+  offTime: 168,
+  offshorePremium: 84.7,
+  hourlyRate: 231,
+  taxPercentage: 30,
+  overtimeOffshoreHours: 0,
+  safetyRepresentativeHours: 0,
+  unionName: "FF",
+  employeeType: "operator",
+  clubDeduction: 0,
+  travelExpenses: 0,
+  holidayCompensation: 0,
+  waitingTimeOffshore: 0,
+  tankAllowance: 0,
+  dirtAllowance: 0,
+  employeeInsuranceCost: -39,
+};
+
+const calculateSalaryValues = ({
+  offTime,
+  offshorePremium,
+  hourlyRate,
+  taxPercentage,
+  overtimeOffshoreHours,
+  safetyRepresentativeHours,
+  unionName,
+  employeeType,
+  clubDeduction,
+  travelExpenses,
+  holidayCompensation,
+  waitingTimeOffshore,
+  tankAllowance,
+  dirtAllowance,
+  employeeInsuranceCost,
+}) => {
+  const monthlySalary = 162.5 * hourlyRate;
+  const reducedAnnualWork = (offTime / 168) * 15.68;
+  const reducedAnnualWorkAmount =
+    employeeType === "leader"
+      ? 0
+      : -parseFloat((reducedAnnualWork * hourlyRate).toFixed(2));
+  const srAmount = safetyRepresentativeHours * 15;
+  const overtimeBaseSalary = overtimeOffshoreHours * hourlyRate;
+  const overtimeExtraPercentage = overtimeBaseSalary;
+  const totalOffshoreHours = offTime + overtimeOffshoreHours;
+  const totalOffshorePremium = offshorePremium * totalOffshoreHours;
+  const brutto =
+    monthlySalary +
+    reducedAnnualWorkAmount +
+    overtimeBaseSalary +
+    overtimeExtraPercentage +
+    totalOffshorePremium +
+    srAmount +
+    travelExpenses +
+    holidayCompensation +
+    waitingTimeOffshore +
+    tankAllowance +
+    dirtAllowance;
+  const grossTotal = brutto;
+  const taxWithholding = -(brutto * taxPercentage) / 100;
+  const unionFees = (() => {
+    switch (unionName) {
+      case "FF":
+        return -((brutto - travelExpenses) * 1.5) / 100;
+      case "Safe":
+        return -460;
+      case "Parat":
+        return -520;
+      case "Ledere":
+        return -220;
+      default:
+        return 0;
+    }
+  })();
+  const netSalary =
+    grossTotal +
+    taxWithholding +
+    clubDeduction +
+    employeeInsuranceCost +
+    unionFees;
+
+  return {
+    monthlySalary,
+    netSalary,
+    reducedAnnualWork,
+    reducedAnnualWorkAmount,
+    taxWithholding,
+    totalOffshoreHours,
+    overtimeBaseSalary,
+    totalOffshorePremium,
+    overtimeExtraPercentage,
+    grossTotal,
+    srAmount,
+    unionFees,
+    brutto,
+  };
+};
+
 export default function MainScreen() {
-  const [state, setState] = useState({
-    offTime: 168,
-    offshorePremium: 84.7,
-    hourlyRate: 231,
-    taxPercentage: 30,
-    monthlySalary: 0,
-    netSalary: 0,
-    reducedAnnualWork: 0,
-    reducedAnnualWorkAmount: 0,
-    taxWithholding: 0,
-    overtimeOffshoreHours: 0,
-    totalOffshoreHours: 0,
-    overtimeBaseSalary: 0,
-    totalOffshorePremium: 0,
-    overtimeExtraPercentage: 0,
-    grossTotal: 0,
-    safetyRepresentativeHours: 0,
-    srAmount: 0,
-    unionFees: 0,
-    unionName: "FF",
-    employeeType: "operator",
-    clubDeduction: 0,
-    travelExpenses: 0,
-    holidayCompensation: 0,
-    waitingTimeOffshore: 0,
-    tankAllowance: 0,
-    dirtAllowance: 0,
-    brutto: 0,
-    employeeInsuranceCost: -39,
-  });
-
-  const {
-    offTime,
-    offshorePremium,
-    hourlyRate,
-    taxPercentage,
-    overtimeOffshoreHours,
-    safetyRepresentativeHours,
-    unionName,
-    employeeType,
-    clubDeduction,
-    travelExpenses,
-    holidayCompensation,
-    waitingTimeOffshore,
-    tankAllowance,
-    dirtAllowance,
-    employeeInsuranceCost,
-  } = state;
-
+  const [formState, setFormState] = useState(initialFormState);
   const { errors, validate } = useValidate(schema);
+  const salaryValues = useMemo(
+    () => calculateSalaryValues(formState),
+    [formState]
+  );
+  const formData = useMemo(
+    () => ({
+      ...formState,
+      ...salaryValues,
+    }),
+    [formState, salaryValues]
+  );
 
-  const setUnionName = (newValue) => {
-    setState((prevState) => ({
+  const setUnionName = useCallback((newValue) => {
+    setFormState((prevState) => ({
       ...prevState,
       unionName: newValue,
     }));
-  };
+  }, []);
 
-  const setEmployeeType = (newValue) => {
-    setState((prevState) => ({
+  const setEmployeeType = useCallback((newValue) => {
+    setFormState((prevState) => ({
       ...prevState,
       employeeType: newValue,
     }));
-  };
+  }, []);
 
-  useEffect(() => {
-    const monthlySalary = 162.5 * hourlyRate;
-    const reducedAnnualWork = (offTime / 168) * 15.68;
-    const reducedAnnualWorkAmount =
-      employeeType === "leader"
-        ? 0
-        : -parseFloat((reducedAnnualWork * hourlyRate).toFixed(2));
-    const srAmount = safetyRepresentativeHours * 15;
-    const overtimeBaseSalary = overtimeOffshoreHours * hourlyRate;
-    const overtimeExtraPercentage = overtimeBaseSalary;
-    const totalOffshoreHours = offTime + overtimeOffshoreHours;
-    const totalOffshorePremium = offshorePremium * totalOffshoreHours;
-    const brutto =
-      monthlySalary +
-      reducedAnnualWorkAmount +
-      overtimeBaseSalary +
-      overtimeExtraPercentage +
-      totalOffshorePremium +
-      srAmount +
-      travelExpenses +
-      holidayCompensation +
-      waitingTimeOffshore +
-      tankAllowance +
-      dirtAllowance;
-    const grossTotal = brutto;
-    const taxWithholding = -(brutto * taxPercentage) / 100;
-    const unionFees = (() => {
-      switch (unionName) {
-        case "FF":
-          return -((brutto - travelExpenses) * 1.5) / 100;
-        case "Safe":
-          return -460;
-        case "Parat":
-          return -520;
-        case "Ledere":
-          return -220;
-        default:
-          return 0;
-      }
-    })();
-    const netSalary =
-      grossTotal +
-      taxWithholding +
-      clubDeduction +
-      employeeInsuranceCost +
-      unionFees;
-
-    setState((prevState) => ({
-      ...prevState,
-      monthlySalary,
-      reducedAnnualWork,
-      reducedAnnualWorkAmount,
-      srAmount,
-      overtimeBaseSalary,
-      overtimeExtraPercentage,
-      totalOffshorePremium,
-      taxWithholding,
-      totalOffshoreHours,
-      grossTotal,
-      unionFees,
-      netSalary,
-      brutto,
-    }));
-  }, [
-    offTime,
-    offshorePremium,
-    hourlyRate,
-    taxPercentage,
-    overtimeOffshoreHours,
-    safetyRepresentativeHours,
-    unionName,
-    employeeType,
-    clubDeduction,
-    travelExpenses,
-    holidayCompensation,
-    waitingTimeOffshore,
-    tankAllowance,
-    dirtAllowance,
-    employeeInsuranceCost,
-  ]);
-
-  const handleValidation = (field, value) => {
+  const handleValidation = useCallback((field, value) => {
     const newValue = value ?? 0;
     const nextState = {
-      ...state,
+      ...formState,
       [field]: newValue,
     };
 
-    setState(nextState);
+    setFormState(nextState);
     validate(nextState);
-  };
+  }, [formState, validate]);
 
   return (
     <div className="app-shell">
@@ -171,7 +151,7 @@ export default function MainScreen() {
         <section className="calculator-card">
           <Row className="calculator-grid">
             <FullForm
-              formData={state}
+              formData={formData}
               handleValidation={handleValidation}
               errors={errors}
               setUnionName={setUnionName}

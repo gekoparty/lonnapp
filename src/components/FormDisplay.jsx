@@ -1,3 +1,4 @@
+import { useId } from "react";
 import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
@@ -18,10 +19,14 @@ const FormDisplay = ({
   suffix,
   highlight = false,
 }) => {
+  const generatedId = useId();
+  const fieldId = id ?? generatedId;
+  const errorId = `${fieldId}-error`;
+  const hasError = !!errors[fieldId];
 
   if (type === "numeric") {
     return (
-        <Form.Group as={Row} className="form-row" controlId={id}>
+        <Form.Group as={Row} className="form-row" controlId={fieldId}>
           <Form.Label column sm={6}>{label}</Form.Label>
           <Col sm={6}>
             <NumericFormat
@@ -30,7 +35,8 @@ const FormDisplay = ({
               className="text-end"
               allowNegative={false}
               allowLeadingZeros={false}
-              isInvalid={!!errors[id]}
+              isInvalid={hasError}
+              aria-describedby={hasError ? errorId : undefined}
               value={value}
               suffix={suffix}
               onValueChange={(values) => {
@@ -39,8 +45,8 @@ const FormDisplay = ({
               }}
               required
             />
-            <Form.Control.Feedback type="invalid">
-              {errors[id]}
+            <Form.Control.Feedback id={errorId} type="invalid">
+              {errors[fieldId]}
             </Form.Control.Feedback>
           </Col>
         </Form.Group>
@@ -50,7 +56,7 @@ const FormDisplay = ({
       <Form.Group
         as={Row}
         className={`form-row result-row${highlight ? " total-row" : ""}`}
-        controlId={id}
+        controlId={fieldId}
       >
         <Form.Label column sm={6}>{label}</Form.Label>
         <Col sm={6}>
@@ -79,7 +85,7 @@ const FormDisplay = ({
         label={label}
         name={name}
         type={type}
-        id={id}
+        id={fieldId}
       />
     );
   }

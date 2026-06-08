@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 const useValidate = (schema) => {
   const [errors, setErrors] = useState({});
 
-  const validate = (data) => {
+  const validate = useCallback((data) => {
     try {
       schema.validateSync(data, { abortEarly: false });
       setErrors({});
@@ -19,7 +19,7 @@ const useValidate = (schema) => {
       setErrors(validationErrors);
       return false;
     }
-  };
+  }, [schema]);
 
   return { errors, validate };
 };
