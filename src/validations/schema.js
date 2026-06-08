@@ -20,6 +20,10 @@ const schema = Yup.object().shape({
   safetyRepresentativeHours: Yup.number()
     .min(0, positiveNumberMessage)
     .default(0),
+  holidayCompensation: Yup.number().min(0, positiveNumberMessage).default(0),
+  waitingTimeOffshore: Yup.number().min(0, positiveNumberMessage).default(0),
+  tankAllowance: Yup.number().min(0, positiveNumberMessage).default(0),
+  dirtAllowance: Yup.number().min(0, positiveNumberMessage).default(0),
 });
 
 export default schema;

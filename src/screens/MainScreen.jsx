@@ -30,6 +30,10 @@ export default function MainScreen() {
     employeeType: "operator",
     clubDeduction: 0,
     travelExpenses: 0,
+    holidayCompensation: 0,
+    waitingTimeOffshore: 0,
+    tankAllowance: 0,
+    dirtAllowance: 0,
     brutto: 0,
     employeeInsuranceCost: -39,
   });
@@ -45,6 +49,10 @@ export default function MainScreen() {
     employeeType,
     clubDeduction,
     travelExpenses,
+    holidayCompensation,
+    waitingTimeOffshore,
+    tankAllowance,
+    dirtAllowance,
     employeeInsuranceCost,
   } = state;
 
@@ -83,7 +91,11 @@ export default function MainScreen() {
       overtimeExtraPercentage +
       totalOffshorePremium +
       srAmount +
-      travelExpenses;
+      travelExpenses +
+      holidayCompensation +
+      waitingTimeOffshore +
+      tankAllowance +
+      dirtAllowance;
     const grossTotal = brutto;
     const taxWithholding = -(brutto * taxPercentage) / 100;
     const unionFees = (() => {
@@ -134,6 +146,10 @@ export default function MainScreen() {
     employeeType,
     clubDeduction,
     travelExpenses,
+    holidayCompensation,
+    waitingTimeOffshore,
+    tankAllowance,
+    dirtAllowance,
     employeeInsuranceCost,
   ]);
 

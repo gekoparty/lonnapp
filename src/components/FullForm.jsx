@@ -34,6 +34,10 @@ const FullForm = ({
     employeeInsuranceCost,
     unionName,
     employeeType,
+    holidayCompensation,
+    waitingTimeOffshore,
+    tankAllowance,
+    dirtAllowance,
   } = formData;
 
   return (
@@ -103,6 +107,46 @@ const FullForm = ({
               errors={errors}
               suffix=" %"
               value={taxPercentage}
+              handleValidation={handleValidation}
+            />
+
+            <hr className="section-divider" />
+
+            <h2 className="panel-title">Tillegg</h2>
+            <FormDisplay
+              type="numeric"
+              label="Helligdag"
+              id="holidayCompensation"
+              errors={errors}
+              suffix=" kr"
+              value={holidayCompensation}
+              handleValidation={handleValidation}
+            />
+            <FormDisplay
+              type="numeric"
+              label="Ventetid offshore"
+              id="waitingTimeOffshore"
+              errors={errors}
+              suffix=" kr"
+              value={waitingTimeOffshore}
+              handleValidation={handleValidation}
+            />
+            <FormDisplay
+              type="numeric"
+              label="Tanktillegg"
+              id="tankAllowance"
+              errors={errors}
+              suffix=" kr"
+              value={tankAllowance}
+              handleValidation={handleValidation}
+            />
+            <FormDisplay
+              type="numeric"
+              label="Smusstillegg"
+              id="dirtAllowance"
+              errors={errors}
+              suffix=" kr"
+              value={dirtAllowance}
               handleValidation={handleValidation}
             />
           </Form>
@@ -262,6 +306,42 @@ const FullForm = ({
                 type="text"
                 suffix=" kr"
                 id="srAmount"
+              />
+            )}
+            {holidayCompensation > 0 && (
+              <FormDisplay
+                value={holidayCompensation}
+                label="Helligdag"
+                type="text"
+                suffix=" kr"
+                id="holidayCompensationSummary"
+              />
+            )}
+            {waitingTimeOffshore > 0 && (
+              <FormDisplay
+                value={waitingTimeOffshore}
+                label="Ventetid offshore"
+                type="text"
+                suffix=" kr"
+                id="waitingTimeOffshoreSummary"
+              />
+            )}
+            {tankAllowance > 0 && (
+              <FormDisplay
+                value={tankAllowance}
+                label="Tanktillegg"
+                type="text"
+                suffix=" kr"
+                id="tankAllowanceSummary"
+              />
+            )}
+            {dirtAllowance > 0 && (
+              <FormDisplay
+                value={dirtAllowance}
+                label="Smusstillegg"
+                type="text"
+                suffix=" kr"
+                id="dirtAllowanceSummary"
               />
             )}
 

@@ -56,3 +56,18 @@ test("does not deduct reduced annual work for leaders", async () => {
     ).toHaveValue("0 kr");
   });
 });
+
+test("adds extra compensation amounts to gross salary", async () => {
+  render(<App />);
+
+  fireEvent.change(document.querySelector("#tankAllowance"), {
+    target: { value: "500 kr" },
+  });
+
+  await waitFor(() => {
+    expect(screen.getByLabelText(/^Brutto$/i)).toHaveValue("48,645.02 kr");
+    expect(document.querySelector("#tankAllowanceSummary")).toHaveValue(
+      "500 kr"
+    );
+  });
+});
