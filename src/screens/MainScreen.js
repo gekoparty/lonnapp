@@ -27,6 +27,7 @@ export default function MainScreen() {
     srAmount: 0,
     unionFees: 0,
     unionName: "FF",
+    employeeType: "operator",
     clubDeduction: 0,
     travelExpenses: 0,
     brutto: 0,
@@ -41,6 +42,7 @@ export default function MainScreen() {
     overtimeOffshoreHours,
     safetyRepresentativeHours,
     unionName,
+    employeeType,
     clubDeduction,
     travelExpenses,
     employeeInsuranceCost,
@@ -55,12 +57,20 @@ export default function MainScreen() {
     }));
   };
 
+  const setEmployeeType = (newValue) => {
+    setState((prevState) => ({
+      ...prevState,
+      employeeType: newValue,
+    }));
+  };
+
   useEffect(() => {
     const monthlySalary = 162.5 * hourlyRate;
     const reducedAnnualWork = (offTime / 168) * 15.68;
-    const reducedAnnualWorkAmount = -parseFloat(
-      (reducedAnnualWork * hourlyRate).toFixed(2)
-    );
+    const reducedAnnualWorkAmount =
+      employeeType === "leader"
+        ? 0
+        : -parseFloat((reducedAnnualWork * hourlyRate).toFixed(2));
     const srAmount = safetyRepresentativeHours * 15;
     const overtimeBaseSalary = overtimeOffshoreHours * hourlyRate;
     const overtimeExtraPercentage = overtimeBaseSalary;
@@ -84,6 +94,8 @@ export default function MainScreen() {
           return -460;
         case "Parat":
           return -520;
+        case "Ledere":
+          return -220;
         default:
           return 0;
       }
@@ -119,6 +131,7 @@ export default function MainScreen() {
     overtimeOffshoreHours,
     safetyRepresentativeHours,
     unionName,
+    employeeType,
     clubDeduction,
     travelExpenses,
     employeeInsuranceCost,
@@ -146,6 +159,7 @@ export default function MainScreen() {
               handleValidation={handleValidation}
               errors={errors}
               setUnionName={setUnionName}
+              setEmployeeType={setEmployeeType}
             />
           </Row>
         </section>

@@ -12,6 +12,7 @@ const FormDisplay = ({
   name,
   onChange,
   defaultChecked = false,
+  checked,
   errors = {},
   handleValidation,
   suffix,
@@ -67,10 +68,13 @@ const FormDisplay = ({
       </Form.Group>
     );
   } else {
+    const radioStateProps =
+      checked === undefined ? { defaultChecked } : { checked };
+
     return (
       <Form.Check
         inline
-        defaultChecked={defaultChecked}
+        {...radioStateProps}
         onChange={onChange}
         label={label}
         name={name}
@@ -91,6 +95,7 @@ FormDisplay.propTypes = {
     value: PropTypes.number,
     onChange: PropTypes.func,
     defaultChecked: PropTypes.bool,
+    checked: PropTypes.bool,
     errors: PropTypes.object,
     handleValidation: PropTypes.func,
     suffix: PropTypes.string,

@@ -3,7 +3,13 @@ import Col from "react-bootstrap/Col";
 import PropTypes from "prop-types";
 import FormDisplay from "./FormDisplay";
 
-const FullForm = ({ formData, handleValidation, errors, setUnionName }) => {
+const FullForm = ({
+  formData,
+  handleValidation,
+  errors,
+  setUnionName,
+  setEmployeeType,
+}) => {
   const {
     taxPercentage,
     safetyRepresentativeHours,
@@ -26,6 +32,8 @@ const FullForm = ({ formData, handleValidation, errors, setUnionName }) => {
     overtimeBaseSalary,
     overtimeExtraPercentage,
     employeeInsuranceCost,
+    unionName,
+    employeeType,
   } = formData;
 
   return (
@@ -122,14 +130,36 @@ const FullForm = ({ formData, handleValidation, errors, setUnionName }) => {
 
             <hr className="section-divider" />
 
+            <h2 className="panel-title">Stilling</h2>
+            <div className="choice-options employee-options">
+              <FormDisplay
+                label="Operatør"
+                id="employee-operator"
+                type="radio"
+                name="employeeType"
+                checked={employeeType === "operator"}
+                onChange={() => setEmployeeType("operator")}
+              />
+              <FormDisplay
+                label="Leder"
+                id="employee-leader"
+                type="radio"
+                name="employeeType"
+                checked={employeeType === "leader"}
+                onChange={() => setEmployeeType("leader")}
+              />
+            </div>
+
+            <hr className="section-divider" />
+
             <h2 className="panel-title">Fagforening</h2>
-            <div className="union-options">
+            <div className="choice-options union-options">
               <FormDisplay
                 label="FF"
                 id="union-ff"
                 type="radio"
                 name="unionName"
-                defaultChecked
+                checked={unionName === "FF"}
                 onChange={() => setUnionName("FF")}
               />
               <FormDisplay
@@ -138,6 +168,7 @@ const FullForm = ({ formData, handleValidation, errors, setUnionName }) => {
                 name="unionName"
                 type="radio"
                 id="union-safe"
+                checked={unionName === "Safe"}
               />
               <FormDisplay
                 onChange={() => setUnionName("Parat")}
@@ -145,6 +176,7 @@ const FullForm = ({ formData, handleValidation, errors, setUnionName }) => {
                 name="unionName"
                 type="radio"
                 id="union-parat"
+                checked={unionName === "Parat"}
               />
               <FormDisplay
                 onChange={() => setUnionName("UO")}
@@ -152,6 +184,15 @@ const FullForm = ({ formData, handleValidation, errors, setUnionName }) => {
                 name="unionName"
                 type="radio"
                 id="union-uo"
+                checked={unionName === "UO"}
+              />
+              <FormDisplay
+                onChange={() => setUnionName("Ledere")}
+                label="Ledere"
+                name="unionName"
+                type="radio"
+                id="union-ledere"
+                checked={unionName === "Ledere"}
               />
             </div>
           </Form>
@@ -287,4 +328,5 @@ FullForm.propTypes = {
   handleValidation: PropTypes.func,
   errors: PropTypes.object,
   setUnionName: PropTypes.func,
+  setEmployeeType: PropTypes.func,
 };

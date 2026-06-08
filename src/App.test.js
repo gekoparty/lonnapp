@@ -32,3 +32,27 @@ test("shows validation feedback for tax outside the allowed range", async () => 
     await screen.findByText("Skatt må være mellom 0-100%")
   ).toBeInTheDocument();
 });
+
+test("deducts 220 kr for the Ledere union", async () => {
+  render(<App />);
+
+  fireEvent.click(screen.getByLabelText(/^Ledere$/i));
+
+  await waitFor(() => {
+    expect(screen.getByLabelText(/^Fagforening$/i)).toHaveValue("-220 kr");
+  });
+});
+
+test("does not deduct reduced annual work for leaders", async () => {
+  render(<App />);
+
+  fireEvent.click(screen.getByLabelText(/^Leder$/i));
+
+  await waitFor(() => {
+    expect(
+      screen.getByLabelText(/redusert/i, {
+        selector: "#reducedAnnualWorkAmount",
+      })
+    ).toHaveValue("0 kr");
+  });
+});
