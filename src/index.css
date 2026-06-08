@@ -39,6 +39,7 @@ code {
 
 .col,
 .col-sm-5,
+.col-sm-6,
 .col-sm-7,
 .col-lg-3,
 .col-lg-4,
@@ -109,6 +110,11 @@ code {
     width: 41.66666667%;
   }
 
+  .col-sm-6 {
+    flex: 0 0 auto;
+    width: 50%;
+  }
+
   .col-sm-7 {
     flex: 0 0 auto;
     width: 58.33333333%;
@@ -134,11 +140,11 @@ code {
 
 .app-shell {
   min-height: 100vh;
-  padding: 32px 16px 48px;
+  padding: 18px 16px 32px;
 }
 
 .calculator-shell {
-  width: min(1180px, 100%);
+  width: min(1040px, 100%);
   margin: 0 auto;
 }
 
@@ -146,7 +152,7 @@ code {
   align-items: center;
   display: flex;
   justify-content: space-between;
-  margin-bottom: 18px;
+  margin-bottom: 14px;
   gap: 16px;
 }
 
@@ -157,7 +163,7 @@ code {
 }
 
 .brand-title {
-  font-size: clamp(1.9rem, 3vw, 2.8rem);
+  font-size: clamp(1.7rem, 2.4vw, 2.35rem);
   font-weight: 800;
   letter-spacing: 0;
   line-height: 1.05;
@@ -166,7 +172,7 @@ code {
 
 .brand-subtitle {
   color: #62706b;
-  font-size: 1rem;
+  font-size: 0.92rem;
   margin: 0;
 }
 
@@ -177,10 +183,10 @@ code {
   border-radius: 999px;
   color: #2e463d;
   display: inline-flex;
-  font-size: 0.9rem;
+  font-size: 0.82rem;
   font-weight: 700;
   gap: 8px;
-  padding: 10px 14px;
+  padding: 7px 11px;
   white-space: nowrap;
 }
 
@@ -196,21 +202,21 @@ code {
   background: rgba(255, 255, 255, 0.88);
   border: 1px solid rgba(23, 33, 30, 0.08);
   border-radius: 8px;
-  box-shadow: 0 20px 60px rgba(31, 43, 39, 0.13);
-  padding: 22px;
+  box-shadow: 0 16px 42px rgba(31, 43, 39, 0.11);
+  padding: 16px;
 }
 
 .calculator-grid {
-  --bs-gutter-x: 1.1rem;
-  --bs-gutter-y: 1.1rem;
+  --bs-gutter-x: 0.85rem;
+  --bs-gutter-y: 0.85rem;
+  align-items: flex-start;
 }
 
 .panel {
   background: #ffffff;
   border: 1px solid #dde5e0;
   border-radius: 8px;
-  height: 100%;
-  padding: 18px;
+  padding: 14px 16px;
   text-align: left;
 }
 
@@ -225,10 +231,10 @@ code {
 
 .panel-title {
   color: #17211e;
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 0.08em;
-  margin: 0 0 16px;
+  margin: 0 0 10px;
   text-transform: uppercase;
 }
 
@@ -236,8 +242,8 @@ code {
   align-items: center;
   border-bottom: 1px solid #eef2f0;
   margin: 0;
-  min-height: 54px;
-  padding: 8px 0;
+  min-height: 46px;
+  padding: 5px 0;
 }
 
 .form-row:last-child {
@@ -246,7 +252,7 @@ code {
 
 .form-row .form-label {
   color: #4c5d57;
-  font-size: 0.9rem;
+  font-size: 0.84rem;
   font-weight: 650;
   margin: 0;
   padding-left: 0;
@@ -256,8 +262,10 @@ code {
   border: 1px solid #cfdbd6;
   border-radius: 6px;
   color: #17211e;
+  font-size: 0.9rem;
   font-weight: 700;
-  min-height: 40px;
+  min-height: 34px;
+  padding: 5px 8px;
 }
 
 .form-row .form-control:focus {
@@ -279,30 +287,31 @@ code {
   background: #eef7f3;
   border: 1px solid #b9d4c8;
   border-radius: 8px;
-  margin-top: 12px;
-  padding: 14px 12px;
+  margin-top: 10px;
+  min-height: 56px;
+  padding: 9px 10px;
 }
 
 .total-row .form-label {
   color: #1d5d47;
-  font-size: 1rem;
+  font-size: 0.92rem;
 }
 
 .total-row .form-control[readonly] {
   background: transparent;
   color: #1d5d47;
-  font-size: 1.2rem;
+  font-size: 1rem;
 }
 
 .section-divider {
   border-color: #dce8e2;
-  margin: 14px 0;
+  margin: 10px 0;
   opacity: 1;
 }
 
 .union-options {
   display: grid;
-  gap: 10px;
+  gap: 7px;
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
@@ -312,24 +321,25 @@ code {
   border: 1px solid #dce5e0;
   border-radius: 6px;
   display: flex;
-  gap: 8px;
+  gap: 6px;
   margin: 0;
-  min-height: 42px;
-  padding: 10px 12px 10px 34px;
+  min-height: 34px;
+  padding: 7px 9px 7px 29px;
 }
 
 .union-options .form-check-input {
-  margin-left: -22px;
+  margin-left: -19px;
 }
 
 .union-options .form-check-label {
   color: #2f423b;
+  font-size: 0.84rem;
   font-weight: 700;
 }
 
 @media (max-width: 768px) {
   .app-shell {
-    padding: 20px 12px 32px;
+    padding: 16px 10px 28px;
   }
 
   .top-bar {
@@ -338,11 +348,11 @@ code {
   }
 
   .calculator-card {
-    padding: 12px;
+    padding: 10px;
   }
 
   .panel {
-    padding: 14px;
+    padding: 12px;
   }
 
   .union-options {

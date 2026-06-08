@@ -21,8 +21,8 @@ const FormDisplay = ({
   if (type === "numeric") {
     return (
         <Form.Group as={Row} className="form-row" controlId={id}>
-          <Form.Label column sm={5}>{label}</Form.Label>
-          <Col sm={7}>
+          <Form.Label column sm={6}>{label}</Form.Label>
+          <Col sm={6}>
             <NumericFormat
               customInput={Form.Control}
               min={0}
@@ -51,8 +51,8 @@ const FormDisplay = ({
         className={`form-row result-row${highlight ? " total-row" : ""}`}
         controlId={id}
       >
-        <Form.Label column sm={5}>{label}</Form.Label>
-        <Col sm={7}>
+        <Form.Label column sm={6}>{label}</Form.Label>
+        <Col sm={6}>
           <NumericFormat
             customInput={Form.Control}
             type={"text"}
