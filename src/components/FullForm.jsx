@@ -34,7 +34,10 @@ const FullForm = ({
     employeeInsuranceCost,
     unionName,
     employeeType,
-    holidayCompensation,
+    holidayWorkDays,
+    holidayWorkHours,
+    holidayPremium100,
+    holidayAllowance75,
     waitingTimeOffshore,
     tankAllowance,
     dirtAllowance,
@@ -115,11 +118,20 @@ const FullForm = ({
             <h2 className="panel-title">Tillegg</h2>
             <FormDisplay
               type="numeric"
-              label="Helligdag"
-              id="holidayCompensation"
+              label="Helligdager"
+              id="holidayWorkDays"
               errors={errors}
-              suffix=" kr"
-              value={holidayCompensation}
+              suffix=" d"
+              value={holidayWorkDays}
+              handleValidation={handleValidation}
+            />
+            <FormDisplay
+              type="numeric"
+              label="Timer helligdag"
+              id="holidayWorkHours"
+              errors={errors}
+              suffix=" t"
+              value={holidayWorkHours}
               handleValidation={handleValidation}
             />
             <FormDisplay
@@ -308,13 +320,22 @@ const FullForm = ({
                 id="srAmount"
               />
             )}
-            {holidayCompensation > 0 && (
+            {holidayPremium100 > 0 && (
               <FormDisplay
-                value={holidayCompensation}
-                label="Helligdag"
+                value={holidayPremium100}
+                label="Helligdagstillegg 100%"
                 type="text"
                 suffix=" kr"
-                id="holidayCompensationSummary"
+                id="holidayPremium100Summary"
+              />
+            )}
+            {holidayAllowance75 > 0 && (
+              <FormDisplay
+                value={holidayAllowance75}
+                label="Helligdagsgodtgjørelse"
+                type="text"
+                suffix=" kr"
+                id="holidayAllowance75Summary"
               />
             )}
             {waitingTimeOffshore > 0 && (

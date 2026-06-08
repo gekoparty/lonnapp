@@ -17,7 +17,8 @@ const initialFormState = {
   employeeType: "operator",
   clubDeduction: 0,
   travelExpenses: 0,
-  holidayCompensation: 0,
+  holidayWorkDays: 0,
+  holidayWorkHours: 12,
   waitingTimeOffshore: 0,
   tankAllowance: 0,
   dirtAllowance: 0,
@@ -35,7 +36,8 @@ const calculateSalaryValues = ({
   employeeType,
   clubDeduction,
   travelExpenses,
-  holidayCompensation,
+  holidayWorkDays,
+  holidayWorkHours,
   waitingTimeOffshore,
   tankAllowance,
   dirtAllowance,
@@ -52,6 +54,9 @@ const calculateSalaryValues = ({
   const overtimeExtraPercentage = overtimeBaseSalary;
   const totalOffshoreHours = offTime + overtimeOffshoreHours;
   const totalOffshorePremium = offshorePremium * totalOffshoreHours;
+  const holidayPremium100 = holidayWorkDays * holidayWorkHours * hourlyRate;
+  const holidayAllowance75 = holidayWorkDays * 7.5 * hourlyRate;
+  const holidayCompensation = holidayPremium100 + holidayAllowance75;
   const brutto =
     monthlySalary +
     reducedAnnualWorkAmount +
@@ -99,6 +104,9 @@ const calculateSalaryValues = ({
     overtimeExtraPercentage,
     grossTotal,
     srAmount,
+    holidayPremium100,
+    holidayAllowance75,
+    holidayCompensation,
     unionFees,
     brutto,
   };

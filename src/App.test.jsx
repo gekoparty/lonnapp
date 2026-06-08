@@ -71,3 +71,21 @@ test("adds extra compensation amounts to gross salary", async () => {
     );
   });
 });
+
+test("calculates holiday premium and holiday compensation from days and hours", async () => {
+  render(<App />);
+
+  fireEvent.change(document.querySelector("#holidayWorkDays"), {
+    target: { value: "1 d" },
+  });
+
+  await waitFor(() => {
+    expect(document.querySelector("#holidayPremium100Summary")).toHaveValue(
+      "2,772 kr"
+    );
+    expect(document.querySelector("#holidayAllowance75Summary")).toHaveValue(
+      "1,732.5 kr"
+    );
+    expect(screen.getByLabelText(/^Brutto$/i)).toHaveValue("52,649.52 kr");
+  });
+});
