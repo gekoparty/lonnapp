@@ -1,337 +1,290 @@
 import Form from "react-bootstrap/Form";
-import FormDisplay from "./FormDisplay";
 import Col from "react-bootstrap/Col";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
+import FormDisplay from "./FormDisplay";
 
 const FullForm = ({ formData, handleValidation, errors, setUnionName }) => {
-    console.log(formData)
-    const {
-        taxPercentage,
-        safetyRepresentativeHours,
-        hourlyRate,
-        travelExpenses,
-        offshorePremium,
-        offTime,
-        overtimeOffshoreHours,
-        totalOffshoreHours,
-        reducedAnnualWork,
-        reducedAnnualWorkAmount,
-        totalOffshorePremium,
-        monthlySalary,
-        netSalary,
-        unionFees,
-        grossTotal,
-        clubDeduction,
-        taxWithholding,
-        srAmount,
-        overtimeBaseSalary,
-        overtimeExtraPercentage,
-        employeeInsuranceCost,
-        key,
-      } = formData;
+  const {
+    taxPercentage,
+    safetyRepresentativeHours,
+    hourlyRate,
+    travelExpenses,
+    offshorePremium,
+    offTime,
+    overtimeOffshoreHours,
+    totalOffshoreHours,
+    reducedAnnualWork,
+    reducedAnnualWorkAmount,
+    totalOffshorePremium,
+    monthlySalary,
+    netSalary,
+    unionFees,
+    grossTotal,
+    clubDeduction,
+    taxWithholding,
+    srAmount,
+    overtimeBaseSalary,
+    overtimeExtraPercentage,
+    employeeInsuranceCost,
+  } = formData;
+
   return (
     <>
-    <Col lg={3}>
-        
-      <Form >
-        <FormDisplay
-        key={key}
-          type={"numeric"}
-          controlId={"offtime"}
-          label={"Off/Timer"}
-          id={"offTime"}
-          errors={errors}
-          value={offTime}
-          suffix={" T"}
-          handleValidation={handleValidation}
-        />
-
-        <FormDisplay
-        key={key}
-          type={"numeric"}
-          controlId={"overtimeOffshoreHours"}
-          label={"Overtid Off"}
-          id={"overtimeOffshoreHours"}
-          errors={errors}
-          suffix={" T"}
-          handleValidation={handleValidation}
-          value={overtimeOffshoreHours}
-        />
-
-        <FormDisplay
-        key={key}
-          type={"numeric"}
-          label={"Off/Tillegg"}
-          min={0}
-          controlId={"offshorePremium"}
-          id={"offshorePremium"}
-          errors={errors}
-          suffix={" Kr"}
-          value={offshorePremium}
-          handleValidation={handleValidation}
-        />
-
-        <FormDisplay
-        key={key}
-          type={"numeric"}
-          controlId={"travelExpenses"}
-          label={"Reise"}
-          id={"travelExpenses"}
-          errors={errors}
-          value={travelExpenses}
-          suffix={" Kr"}
-          handleValidation={handleValidation}
-        />
-
-        <FormDisplay
-        key={key}
-          type={"numeric"}
-          controlId={"hourlyRate"}
-          label={"Timesats"}
-          id={"hourlyRate"}
-          errors={errors}
-          suffix={" Kr"}
-          value={hourlyRate}
-          handleValidation={handleValidation}
-        />
-
-        <FormDisplay
-        key={key}
-          type={"numeric"}
-          controlId={"safetyRepresentativeHours"}
-          label={"VO Timer"}
-          id={"safetyRepresentativeHours"}
-          errors={errors}
-          suffix={" T"}
-          value={safetyRepresentativeHours}
-          handleValidation={handleValidation}
-        />
-
-        <FormDisplay
-        key={key}
-          type={"numeric"}
-          controlId={"taxPercentage"}
-          label={"Skatt"}
-          id={"taxPercentage"}
-          errors={errors}
-          suffix={" %"}
-          value={taxPercentage}
-          handleValidation={handleValidation}
-        />
-
-        <h4>Fagforening</h4>
-        <div>
-          <FormDisplay
-            label="FF"
-            id={"group1"}
-            type={"radio"}
-            name={"group1"}
-            defaultChecked={true}
-            onChange={() => setUnionName("FF")}
-          />
-
-          <FormDisplay
-            onChange={() => setUnionName("Safe")}
-            label="Safe"
-            name="group1"
-            type={"radio"}
-            id={"group2"}
-          />
-
-          <FormDisplay
-            onChange={() => setUnionName("Parat")}
-            label="Parat"
-            name="group1"
-            type={"radio"}
-            id={"group3"}
-          />
-          <FormDisplay
-            onChange={(e) => setUnionName("UO")}
-            label="UO"
-            name="group1"
-            type={"radio"}
-            id={"group3"}
-          />
-          </div>
-          </Form>
-        </Col>
-      
       <Col lg={4}>
-        <Form >
-          <FormDisplay
-          key={key}
-            type={"text"}
-            label={"Redusert Årsverk"}
-            value={reducedAnnualWork}
-            suffix={" T"}
-            id={"reducedAnnualWork"}
-          />
-
-          <FormDisplay
-          key={key}
-            type={"text"}
-            label={"Sum Timer"}
-            value={totalOffshoreHours}
-            suffix={" T"}
-            id={"totalOffshoreHours"}
-          />
-        </Form>
-      </Col>
-
-      <Col md={3}>
+        <section className="panel">
+          <h2 className="panel-title">Grunnlag</h2>
           <Form>
             <FormDisplay
-            key={key}
-              type={"text"}
-              value={monthlySalary}
-              suffix={" Kr"}
-              label={"Månedslønn"}
-              id={"monthlySalary"}
+              type="numeric"
+              label="Offshoretimer"
+              id="offTime"
+              errors={errors}
+              value={offTime}
+              suffix=" t"
+              handleValidation={handleValidation}
             />
-            {travelExpenses > 0 ? (
-              <FormDisplay
-              key={key}
-                type={"text"}
-                value={travelExpenses}
-                suffix={" Kr"}
-                label={"ReiseOpp"}
-                id={"travelExpenses"}
-              />
-            ) : (
-              ""
-            )}
+            <FormDisplay
+              type="numeric"
+              label="Overtid offshore"
+              id="overtimeOffshoreHours"
+              errors={errors}
+              suffix=" t"
+              handleValidation={handleValidation}
+              value={overtimeOffshoreHours}
+            />
+            <FormDisplay
+              type="numeric"
+              label="Offshoretillegg"
+              id="offshorePremium"
+              errors={errors}
+              suffix=" kr"
+              value={offshorePremium}
+              handleValidation={handleValidation}
+            />
+            <FormDisplay
+              type="numeric"
+              label="Reise"
+              id="travelExpenses"
+              errors={errors}
+              value={travelExpenses}
+              suffix=" kr"
+              handleValidation={handleValidation}
+            />
+            <FormDisplay
+              type="numeric"
+              label="Timesats"
+              id="hourlyRate"
+              errors={errors}
+              suffix=" kr"
+              value={hourlyRate}
+              handleValidation={handleValidation}
+            />
+            <FormDisplay
+              type="numeric"
+              label="VO timer"
+              id="safetyRepresentativeHours"
+              errors={errors}
+              suffix=" t"
+              value={safetyRepresentativeHours}
+              handleValidation={handleValidation}
+            />
+            <FormDisplay
+              type="numeric"
+              label="Skatt"
+              id="taxPercentage"
+              errors={errors}
+              suffix=" %"
+              value={taxPercentage}
+              handleValidation={handleValidation}
+            />
+          </Form>
+        </section>
+      </Col>
 
-            {offTime > 0 ? (
+      <Col lg={3}>
+        <section className="panel panel-muted">
+          <h2 className="panel-title">Timer og valg</h2>
+          <Form>
+            <FormDisplay
+              type="text"
+              label="Redusert årsverk"
+              value={reducedAnnualWork}
+              suffix=" t"
+              id="reducedAnnualWork"
+            />
+            <FormDisplay
+              type="text"
+              label="Sum timer"
+              value={totalOffshoreHours}
+              suffix=" t"
+              id="totalOffshoreHours"
+            />
+
+            <hr className="section-divider" />
+
+            <h2 className="panel-title">Fagforening</h2>
+            <div className="union-options">
               <FormDisplay
-              key={key}
-                type={"text"}
-                value={reducedAnnualWorkAmount}
-                suffix={" Kr"}
-                label={"Beløp Red/Verk"}
-                id={"reducedAnnualWorkAmount"}
+                label="FF"
+                id="union-ff"
+                type="radio"
+                name="unionName"
+                defaultChecked
+                onChange={() => setUnionName("FF")}
               />
-            ) : (
-              ""
+              <FormDisplay
+                onChange={() => setUnionName("Safe")}
+                label="Safe"
+                name="unionName"
+                type="radio"
+                id="union-safe"
+              />
+              <FormDisplay
+                onChange={() => setUnionName("Parat")}
+                label="Parat"
+                name="unionName"
+                type="radio"
+                id="union-parat"
+              />
+              <FormDisplay
+                onChange={() => setUnionName("UO")}
+                label="UO"
+                name="unionName"
+                type="radio"
+                id="union-uo"
+              />
+            </div>
+          </Form>
+        </section>
+      </Col>
+
+      <Col lg={5}>
+        <section className="panel panel-summary">
+          <h2 className="panel-title">Lønnsoversikt</h2>
+          <Form>
+            <FormDisplay
+              type="text"
+              value={monthlySalary}
+              suffix=" kr"
+              label="Månedslønn"
+              id="monthlySalary"
+            />
+            {travelExpenses > 0 && (
+              <FormDisplay
+                type="text"
+                value={travelExpenses}
+                suffix=" kr"
+                label="Reiseoppgjør"
+                id="travelExpensesSummary"
+              />
+            )}
+            {offTime > 0 && (
+              <FormDisplay
+                type="text"
+                value={reducedAnnualWorkAmount}
+                suffix=" kr"
+                label="Redusert årsverk"
+                id="reducedAnnualWorkAmount"
+              />
             )}
             {overtimeBaseSalary > 0 && (
               <FormDisplay
-              key={key}
                 value={overtimeBaseSalary}
-                type={"text"}
-                suffix={" Kr"}
-                label={"Overtid Grunnlønn"}
-                id={"overtimeBaseSalary"}
+                type="text"
+                suffix=" kr"
+                label="Overtid grunnlønn"
+                id="overtimeBaseSalary"
               />
             )}
             {overtimeExtraPercentage > 0 && (
               <FormDisplay
-              key={key}
                 value={overtimeExtraPercentage}
-                label={"Overtid 100%"}
-                type={"text"}
-                suffix={" Kr"}
-                decimalScale={2}
-                id={"overtidEkstra100"}
+                label="Overtid 100%"
+                type="text"
+                suffix=" kr"
+                id="overtimeExtraPercentage"
               />
             )}
-            {offTime > 0 ? (
+            {offTime > 0 && (
               <FormDisplay
-              key={key}
                 value={totalOffshorePremium}
-                label={"Off/Tillegg"}
-                type={"text"}
-                suffix={" Kr"}
-                id={"offshoreTillegg"}
+                label="Offshoretillegg"
+                type="text"
+                suffix=" kr"
+                id="totalOffshorePremium"
               />
-            ) : (
-              ""
             )}
-            {srAmount > 0 ? (
+            {srAmount > 0 && (
               <FormDisplay
-              key={key}
                 value={srAmount}
-                label={"Verneombud"}
-                type={"text"}
-                suffix={" Kr"}
-                id={"srAmount"}
+                label="Verneombud"
+                type="text"
+                suffix=" kr"
+                id="srAmount"
               />
-            ) : (
-              ""
             )}
-            <hr />
+
+            <hr className="section-divider" />
+
             <FormDisplay
-            key={key}
               value={grossTotal}
-              label={"Brutto"}
-              type={"text"}
-              suffix={" Kr"}
-              id={"grossTotal"}
+              label="Brutto"
+              type="text"
+              suffix=" kr"
+              id="grossTotal"
             />
-            {unionFees !== 0 ? (
+            {unionFees !== 0 && (
               <FormDisplay
-              key={key}
                 value={unionFees}
-                label={"Fagforening"}
-                type={"text"}
-                suffix={" Kr"}
+                label="Fagforening"
+                type="text"
+                suffix=" kr"
+                id="unionFees"
               />
-            ) : (
-              ""
             )}
             <FormDisplay
-            key={key}
               value={employeeInsuranceCost}
-              label={"Egenandel Fors"}
-              type={"text"}
-              suffix={" Kr"}
-              id={"emplyeeInsuranceCos"}
+              label="Egenandel forsikring"
+              type="text"
+              suffix=" kr"
+              id="employeeInsuranceCost"
             />
-            {clubDeduction !== 0 ? (
+            {clubDeduction !== 0 && (
               <FormDisplay
-              key={key}
                 value={clubDeduction}
-                label={"Klubbtrekk"}
-                type={"text"}
-                suffix={" Kr"}
-                id={"clubDeduction"}
+                label="Klubbtrekk"
+                type="text"
+                suffix=" kr"
+                id="clubDeduction"
               />
-            ) : (
-              ""
             )}
-            <hr />
             <FormDisplay
-            key={key}
               value={taxWithholding}
-              type={"text"}
-              label={"Skattetrekk"}
-              suffix={" Kr"}
-              id={"taxWithholding"}
+              type="text"
+              label="Skattetrekk"
+              suffix=" kr"
+              id="taxWithholding"
             />
-            <hr />
             <FormDisplay
-              key={key}
               value={netSalary}
-              type={"text"}
-              label={"Netto Utbetalt"}
-              suffix={" Kr"}
-              id={"netSalary"}
+              type="text"
+              label="Netto utbetalt"
+              suffix=" kr"
+              id="netSalary"
+              highlight
             />
           </Form>
-        </Col>
-    
-      </>
+        </section>
+      </Col>
+    </>
   );
- 
-  
 };
-  
 
 export default FullForm;
 
 FullForm.propTypes = {
- formData: PropTypes.object,
- handleValidation: PropTypes.func,
- errors: PropTypes.object
-  
-
-}
+  formData: PropTypes.object,
+  handleValidation: PropTypes.func,
+  errors: PropTypes.object,
+  setUnionName: PropTypes.func,
+};

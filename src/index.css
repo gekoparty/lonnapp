@@ -5,9 +5,235 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background:
+    radial-gradient(circle at top left, rgba(77, 141, 118, 0.16), transparent 34rem),
+    linear-gradient(135deg, #f6f3ec 0%, #eef4f2 48%, #f7f8fb 100%);
+  color: #17211e;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.app-shell {
+  min-height: 100vh;
+  padding: 32px 16px 48px;
+}
+
+.calculator-shell {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+}
+
+.top-bar {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 18px;
+  gap: 16px;
+}
+
+.brand-block {
+  display: grid;
+  gap: 4px;
+  text-align: left;
+}
+
+.brand-title {
+  font-size: clamp(1.9rem, 3vw, 2.8rem);
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 1.05;
+  margin: 0;
+}
+
+.brand-subtitle {
+  color: #62706b;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.status-pill {
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid rgba(23, 33, 30, 0.1);
+  border-radius: 999px;
+  color: #2e463d;
+  display: inline-flex;
+  font-size: 0.9rem;
+  font-weight: 700;
+  gap: 8px;
+  padding: 10px 14px;
+  white-space: nowrap;
+}
+
+.status-dot {
+  background: #31a66a;
+  border-radius: 999px;
+  box-shadow: 0 0 0 4px rgba(49, 166, 106, 0.14);
+  height: 9px;
+  width: 9px;
+}
+
+.calculator-card {
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(23, 33, 30, 0.08);
+  border-radius: 8px;
+  box-shadow: 0 20px 60px rgba(31, 43, 39, 0.13);
+  padding: 22px;
+}
+
+.calculator-grid {
+  --bs-gutter-x: 1.1rem;
+  --bs-gutter-y: 1.1rem;
+}
+
+.panel {
+  background: #ffffff;
+  border: 1px solid #dde5e0;
+  border-radius: 8px;
+  height: 100%;
+  padding: 18px;
+  text-align: left;
+}
+
+.panel-muted {
+  background: #f7faf8;
+}
+
+.panel-summary {
+  border-color: #b9d4c8;
+  box-shadow: inset 0 4px 0 #2f8062;
+}
+
+.panel-title {
+  color: #17211e;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  margin: 0 0 16px;
+  text-transform: uppercase;
+}
+
+.form-row {
+  align-items: center;
+  border-bottom: 1px solid #eef2f0;
+  margin: 0;
+  min-height: 54px;
+  padding: 8px 0;
+}
+
+.form-row:last-child {
+  border-bottom: 0;
+}
+
+.form-row .form-label {
+  color: #4c5d57;
+  font-size: 0.9rem;
+  font-weight: 650;
+  margin: 0;
+  padding-left: 0;
+}
+
+.form-row .form-control {
+  border: 1px solid #cfdbd6;
+  border-radius: 6px;
+  color: #17211e;
+  font-weight: 700;
+  min-height: 40px;
+}
+
+.form-row .form-control:focus {
+  border-color: #2f8062;
+  box-shadow: 0 0 0 0.22rem rgba(47, 128, 98, 0.15);
+}
+
+.form-row .form-control[readonly] {
+  background: #f5f7f6;
+  border-color: transparent;
+}
+
+.result-row .form-control[readonly] {
+  background: #ffffff;
+  color: #20352d;
+}
+
+.total-row {
+  background: #eef7f3;
+  border: 1px solid #b9d4c8;
+  border-radius: 8px;
+  margin-top: 12px;
+  padding: 14px 12px;
+}
+
+.total-row .form-label {
+  color: #1d5d47;
+  font-size: 1rem;
+}
+
+.total-row .form-control[readonly] {
+  background: transparent;
+  color: #1d5d47;
+  font-size: 1.2rem;
+}
+
+.section-divider {
+  border-color: #dce8e2;
+  margin: 14px 0;
+  opacity: 1;
+}
+
+.union-options {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.union-options .form-check {
+  align-items: center;
+  background: #f5f7f6;
+  border: 1px solid #dce5e0;
+  border-radius: 6px;
+  display: flex;
+  gap: 8px;
+  margin: 0;
+  min-height: 42px;
+  padding: 10px 12px 10px 34px;
+}
+
+.union-options .form-check-input {
+  margin-left: -22px;
+}
+
+.union-options .form-check-label {
+  color: #2f423b;
+  font-weight: 700;
+}
+
+@media (max-width: 768px) {
+  .app-shell {
+    padding: 20px 12px 32px;
+  }
+
+  .top-bar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .calculator-card {
+    padding: 12px;
+  }
+
+  .panel {
+    padding: 14px;
+  }
+
+  .union-options {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }

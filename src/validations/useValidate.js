@@ -1,30 +1,27 @@
-
-
-import {useState, useEffect} from 'react';
-
+import { useState } from "react";
 
 const useValidate = (schema) => {
   const [errors, setErrors] = useState({});
-  const [isValid, setIsValid] = useState(false);
 
-  useEffect(() => {
-    schema.isValid(true).then(setIsValid);
-  }, [schema]);
-
-  const validate = async (data) => {
+  const validate = (data) => {
     try {
-      await schema.validate(data, { abortEarly: false });
+      schema.validateSync(data, { abortEarly: false });
       setErrors({});
+      return true;
     } catch (err) {
       const validationErrors = {};
-      err.inner.forEach((error) => {
+      const fieldErrors = err.inner?.length ? err.inner : [err];
+
+      fieldErrors.forEach((error) => {
         validationErrors[error.path] = error.message;
       });
+
       setErrors(validationErrors);
+      return false;
     }
   };
 
-  return { errors, isValid, validate };
+  return { errors, validate };
 };
 
 export default useValidate;

@@ -1,18 +1,28 @@
-import React from "react";
 import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import { NumericFormat } from "react-number-format";
 import PropTypes  from "prop-types";
 
-const FormDisplay = ({ value, label, id, type = "text", name, onChange, defaultChecked = false, readOnly = false, errors, handleValidation, suffix }) => {
+const FormDisplay = ({
+  value,
+  label,
+  id,
+  type = "text",
+  name,
+  onChange,
+  defaultChecked = false,
+  errors = {},
+  handleValidation,
+  suffix,
+  highlight = false,
+}) => {
 
   if (type === "numeric") {
     return (
-      <>
-        <Form.Group as={Row} className="mb-3" controlId={id}>
-          <Form.Label column>{label}</Form.Label>
-          <Col>
+        <Form.Group as={Row} className="form-row" controlId={id}>
+          <Form.Label column sm={5}>{label}</Form.Label>
+          <Col sm={7}>
             <NumericFormat
               customInput={Form.Control}
               min={0}
@@ -20,7 +30,7 @@ const FormDisplay = ({ value, label, id, type = "text", name, onChange, defaultC
               allowNegative={false}
               allowLeadingZeros={false}
               isInvalid={!!errors[id]}
-              defaultValue={value}
+              value={value}
               suffix={suffix}
               onValueChange={(values) => {
                 const { floatValue } = values;
@@ -33,13 +43,16 @@ const FormDisplay = ({ value, label, id, type = "text", name, onChange, defaultC
             </Form.Control.Feedback>
           </Col>
         </Form.Group>
-      </>
     );
   } else if (type === "text") {
     return (
-      <Form.Group as={Row} className="mb-3" controlId={id}>
-        <Form.Label column>{label}</Form.Label>
-        <Col>
+      <Form.Group
+        as={Row}
+        className={`form-row result-row${highlight ? " total-row" : ""}`}
+        controlId={id}
+      >
+        <Form.Label column sm={5}>{label}</Form.Label>
+        <Col sm={7}>
           <NumericFormat
             customInput={Form.Control}
             type={"text"}
@@ -78,10 +91,10 @@ FormDisplay.propTypes = {
     value: PropTypes.number,
     onChange: PropTypes.func,
     defaultChecked: PropTypes.bool,
-    readOnly: PropTypes.bool,
     errors: PropTypes.object,
     handleValidation: PropTypes.func,
-    suffix: PropTypes.string
+    suffix: PropTypes.string,
+    highlight: PropTypes.bool
 
 
 }

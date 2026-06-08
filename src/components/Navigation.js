@@ -1,22 +1,15 @@
-import Container from 'react-bootstrap/Container';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
-
 function Navigation() {
   return (
-    <>
-      <Navbar bg="dark" variant="dark">
-        <Container>
-          <Navbar.Brand href="#home">Navbar</Navbar.Brand>
-          <Nav className="me-auto">
-            <Nav.Link href="#home">Home</Nav.Link>
-            <Nav.Link href="#features">Features</Nav.Link>
-            <Nav.Link href="#pricing">Pricing</Nav.Link>
-          </Nav>
-        </Container>
-      </Navbar>
-      <br />
-    </>
+    <header className="top-bar">
+      <div className="brand-block">
+        <h1 className="brand-title">Lønnskalkulator</h1>
+        <p className="brand-subtitle">Regn ut offshoretillegg, trekk og netto utbetaling.</p>
+      </div>
+      <div className="status-pill" aria-label="Automatisk beregning er aktiv">
+        <span className="status-dot" />
+        Automatisk beregning
+      </div>
+    </header>
   );
 }
 
